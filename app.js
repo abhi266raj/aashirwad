@@ -527,7 +527,7 @@ function closeCartDrawer() {
   }
 }
 
-// WhatsApp Order Compilation (Primary Channel)
+// WhatsApp Order Compilation (Restaurant-Owned Official Dispatch Ticket)
 function generateWhatsAppMessage() {
   const { items, totalAmount, count } = getCartTotals();
   if (count === 0) return null;
@@ -537,30 +537,34 @@ function generateWhatsAppMessage() {
   const name = state.delivery.name || 'Valued Customer';
   const phone = state.delivery.phone || '';
 
-  let msg = `🛵 *AASHIRWAD - HOME DELIVERY ORDER*\n`;
+  let msg = `🛵 *aashirwad - OFFICIAL HOME DELIVERY ORDER TICKET*\n`;
   msg += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+  msg += `Thank you for choosing *aashirwad*. Your home delivery order:\n\n`;
   msg += `📍 *Delivery Address:* ${address}\n`;
   msg += `👤 *Customer Name:* ${name}\n`;
   if (phone) msg += `📞 *Customer Phone:* ${phone}\n`;
-  if (notes) msg += `📝 *Instructions:* ${notes}\n`;
+  if (notes) msg += `📝 *Kitchen Instructions:* ${notes}\n`;
   msg += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
-  msg += `🛒 *ORDERED DISHES & EXPECTED PRICE:*\n`;
+  msg += `🍽️ *ORDERED DISHES & EXPECTED PRICE:*\n`;
 
   items.forEach((item, index) => {
     msg += `${index + 1}. *${item.name}*\n`;
-    msg += `   • Qty: ${item.quantity}  |  Price: ₹${item.unitPrice} each\n`;
+    msg += `   • Quantity: ${item.quantity}  |  Unit Price: ₹${item.unitPrice}\n`;
     msg += `   • Subtotal: ₹${item.lineTotal}\n`;
   });
 
   msg += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
-  msg += `💵 *TOTAL EXPECTED PRICE: ₹${totalAmount}*\n`;
-  msg += `🚀 *Delivery:* Free Home Delivery\n`;
-  msg += `\nPlease confirm availability and dispatch. Thank you!`;
+  msg += `💰 *TOTAL EXPECTED BILL: ₹${totalAmount}*\n`;
+  msg += `🚀 *Delivery:* FREE Home Delivery\n`;
+  msg += `⏰ *Order Time:* ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}\n`;
+  msg += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+  msg += `📞 *aashirwad Kitchen Hotline:* 7004230188\n`;
+  msg += `Bansilal Chowk, Hazaribagh`;
 
   return msg;
 }
 
-// SMS Order Compilation
+// SMS Order Compilation (Restaurant-Owned Official Format)
 function generateSMSMessage() {
   const { items, totalAmount, count } = getCartTotals();
   if (count === 0) return null;
@@ -568,19 +572,21 @@ function generateSMSMessage() {
   const notes = document.getElementById('delivery-notes')?.value.trim() || state.delivery.notes;
   const address = state.delivery.address || 'Hazaribagh';
   const name = state.delivery.name || 'Customer';
+  const phone = state.delivery.phone ? ` (${state.delivery.phone})` : '';
 
-  let sms = `AASHIRWAD HOME DELIVERY ORDER\n`;
-  sms += `Address: ${address}\n`;
-  sms += `Name: ${name} (${state.delivery.phone || ''})\n\n`;
-  sms += `ITEMS & EXPECTED PRICE:\n`;
+  let sms = `[aashirwad - HOME DELIVERY ORDER]\n`;
+  sms += `Delivery To: ${name}${phone}\n`;
+  sms += `Address: ${address}\n\n`;
+  sms += `ORDER SUMMARY:\n`;
 
   items.forEach((item, idx) => {
     sms += `${idx + 1}. ${item.name} x${item.quantity} @ Rs.${item.unitPrice} = Rs.${item.lineTotal}\n`;
   });
 
-  sms += `\nTOTAL EXPECTED PRICE: Rs.${totalAmount}\n`;
+  sms += `\nTOTAL EXPECTED BILL: Rs.${totalAmount}\n`;
+  sms += `Delivery: FREE\n`;
   if (notes) sms += `Note: ${notes}\n`;
-  sms += `Please confirm & dispatch.`;
+  sms += `Kitchen Hotline: 7004230188 (aashirwad)`;
 
   return sms;
 }
