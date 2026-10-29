@@ -2,10 +2,10 @@
 
 Fast, direct home delivery ordering web application for **aashirwad** in Hazaribagh, Jharkhand.
 
+🌐 **Live Website (GitHub Pages):** [https://abhi266raj.github.io/aashirwad/](https://abhi266raj.github.io/aashirwad/)  
 📞 **Order & SMS Hotline:** `+91 7004230188` (`7004230188`)  
 📍 **Location:** Bansilal Chowk, Hazaribagh, Jharkhand  
 🚀 **Delivery:** Free Home Delivery in Hazaribagh  
-🌐 **Hosted on:** GitHub Pages  
 
 ---
 
