@@ -1,0 +1,251 @@
+/* ==========================================================================
+   Ashirwad Restaurant - Custom Modern Stylesheet
+   ========================================================================== */
+
+:root {
+  --primary: #c2410c; /* Deep warm Indian saffron / amber red */
+  --primary-hover: #9a3412;
+  --primary-light: #ffedd5;
+  --accent: #d97706;
+  --accent-gold: #f59e0b;
+  --bg-cream: #fffdfa;
+  --surface: #ffffff;
+  --surface-alt: #f8fafc;
+  --text-main: #1c1917;
+  --text-muted: #57534e;
+  --veg-green: #15803d;
+  --nonveg-red: #b91c1c;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-full: 9999px;
+  --font-heading: 'Outfit', sans-serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-family: var(--font-body);
+  color: var(--text-main);
+  background-color: var(--bg-cream);
+}
+
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, .font-heading {
+  font-family: var(--font-heading);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Veg / Non-Veg Indicator Icon */
+.food-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 17px;
+  border-radius: 3px;
+  background-color: #ffffff;
+  flex-shrink: 0;
+}
+.food-badge.veg {
+  border: 1.5px solid var(--veg-green);
+}
+.food-badge.veg::after {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--veg-green);
+}
+.food-badge.non-veg {
+  border: 1.5px solid var(--nonveg-red);
+}
+.food-badge.non-veg::after {
+  content: '';
+  width: 0;
+  height: 0;
+  border-left: 4.5px solid transparent;
+  border-right: 4.5px solid transparent;
+  border-bottom: 7.5px solid var(--nonveg-red);
+}
+
+/* Glassmorphism Navigation */
+.nav-blur {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+/* Hero Pattern Background */
+.hero-gradient {
+  background: radial-gradient(circle at 10% 20%, rgba(255, 237, 213, 0.8) 0%, rgba(254, 243, 199, 0.5) 45%, rgba(255, 253, 250, 1) 90%);
+}
+
+/* Category Tab Pill */
+.category-tab {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+}
+.category-tab.active {
+  background-color: var(--primary);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(194, 65, 12, 0.3);
+}
+
+/* Item Card Hover */
+.menu-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  will-change: transform;
+}
+.menu-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+}
+
+/* Image Shimmer / Ratio */
+.menu-img-wrap {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4/3;
+  background-color: #f1f5f9;
+}
+.menu-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.menu-card:hover .menu-img-wrap img {
+  transform: scale(1.06);
+}
+
+/* Quantity Stepper Button */
+.qty-btn {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font-weight: 700;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+.qty-btn:active {
+  transform: scale(0.92);
+}
+
+/* Floating Cart Button */
+.floating-cart-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 40;
+  box-shadow: 0 10px 25px -3px rgba(194, 65, 12, 0.5), 0 4px 10px -2px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
+  animation: pulse-glow 2.5s infinite;
+}
+.floating-cart-btn:hover {
+  transform: translateY(-2px) scale(1.03);
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 10px 25px -3px rgba(194, 65, 12, 0.45);
+  }
+  50% {
+    box-shadow: 0 14px 30px -2px rgba(194, 65, 12, 0.7);
+  }
+}
+
+/* Cart Drawer Animation */
+.cart-drawer-overlay {
+  transition: opacity 0.3s ease-in-out;
+}
+.cart-drawer {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Toast Notifications */
+#toast-container {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+.toast {
+  pointer-events: auto;
+  background-color: #1e293b;
+  color: #ffffff;
+  padding: 10px 20px;
+  border-radius: var(--radius-full);
+  font-size: 0.875rem;
+  font-weight: 500;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: slide-up 0.25s ease-out forwards;
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Print Optimization for Receipt/Order */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #cart-drawer, #cart-drawer * {
+    visibility: visible;
+  }
+  #cart-drawer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    transform: none !important;
+  }
+}
