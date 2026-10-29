@@ -1,10 +1,11 @@
 /**
- * aashirwad - Professional Restaurant Home Delivery Web Application
+ * aashirwad - Home Delivery Web Application
  * Features:
- * - Cookie-persisted delivery location
- * - Multi-line phone calling options (all verified restaurant numbers)
- * - Searchable menu with live expected price totaling
- * - WhatsApp & SMS order dispatch to 7004230188
+ * - Permanent non-expiring cookie delivery storage
+ * - No popup on launch; address modal only on checkout (or via top header) with skip option
+ * - Clean list of authentic restaurant numbers (no fabricated roles)
+ * - Header navigation (Home, About Us, Location, Call Numbers) & comprehensive footer
+ * - Official restaurant order tickets via WhatsApp & SMS to 7004230188
  */
 
 // Application State
@@ -19,15 +20,17 @@ const state = {
     phone: '',
     notes: ''
   },
-  isDrawerOpen: false
+  isDrawerOpen: false,
+  pendingCheckoutType: 'whatsapp' // 'whatsapp' or 'sms'
 };
 
-// Cookie Helpers
-function setCookie(name, value, days = 60) {
-  const d = new Date();
-  d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
-  const expires = "expires=" + d.toUTCString();
+// Permanent Cookie Helpers (Expires in year 2099)
+function setCookie(name, value) {
+  const expires = "expires=Fri, 31 Dec 2099 23:59:59 GMT";
   document.cookie = `${name}=${encodeURIComponent(value)};${expires};path=/;SameSite=Lax`;
+  try {
+    localStorage.setItem(name, value);
+  } catch (e) {}
 }
 
 function getCookie(name) {
@@ -40,10 +43,14 @@ function getCookie(name) {
       return c.substring(cname.length, c.length);
     }
   }
-  return '';
+  try {
+    return localStorage.getItem(name) || '';
+  } catch (e) {
+    return '';
+  }
 }
 
-// Initialize on Load
+// Initialize on Load (NO POPUP AT LAUNCH)
 document.addEventListener('DOMContentLoaded', () => {
   loadSavedData();
   renderCategories();
@@ -51,24 +58,15 @@ document.addEventListener('DOMContentLoaded', () => {
   setupEventListeners();
   updateCartUI();
   updateLocationHeader();
-
-  // If no delivery address set in cookies, prompt gently after slight delay
-  if (!state.delivery.address) {
-    setTimeout(() => {
-      openLocationModal(false);
-    }, 600);
-  }
 });
 
 // Load Cookies & LocalStorage
 function loadSavedData() {
-  // Load Delivery from Cookies (with localStorage fallback)
-  state.delivery.address = getCookie('aashirwad_addr') || localStorage.getItem('aashirwad_addr') || '';
-  state.delivery.name = getCookie('aashirwad_name') || localStorage.getItem('aashirwad_name') || '';
-  state.delivery.phone = getCookie('aashirwad_phone') || localStorage.getItem('aashirwad_phone') || '';
+  state.delivery.address = getCookie('aashirwad_addr') || '';
+  state.delivery.name = getCookie('aashirwad_name') || '';
+  state.delivery.phone = getCookie('aashirwad_phone') || '';
   state.delivery.notes = localStorage.getItem('aashirwad_notes') || '';
 
-  // Load Cart
   try {
     const savedCart = localStorage.getItem('aashirwad_cart');
     if (savedCart) state.cart = JSON.parse(savedCart);
@@ -83,16 +81,13 @@ function saveDeliveryData(address, name, phone, notes = '') {
   state.delivery.phone = phone.trim();
   state.delivery.notes = notes.trim();
 
-  // Save to Cookies
   setCookie('aashirwad_addr', state.delivery.address);
   setCookie('aashirwad_name', state.delivery.name);
   setCookie('aashirwad_phone', state.delivery.phone);
 
-  // Backup to localStorage
-  localStorage.setItem('aashirwad_addr', state.delivery.address);
-  localStorage.setItem('aashirwad_name', state.delivery.name);
-  localStorage.setItem('aashirwad_phone', state.delivery.phone);
-  localStorage.setItem('aashirwad_notes', state.delivery.notes);
+  try {
+    localStorage.setItem('aashirwad_notes', state.delivery.notes);
+  } catch (e) {}
 
   updateLocationHeader();
 }
@@ -112,35 +107,37 @@ function updateLocationHeader() {
 
   if (state.delivery.address) {
     label.innerHTML = `
-      <span class="truncate max-w-[160px] sm:max-w-[280px] inline-block font-semibold text-stone-800">${state.delivery.address}</span>
+      <span class="truncate max-w-[140px] sm:max-w-[260px] inline-block font-semibold text-stone-800">${state.delivery.address}</span>
       <span class="text-orange-600 font-bold ml-1 text-[11px] underline">Change</span>
     `;
   } else {
     label.innerHTML = `
-      <span class="text-orange-700 font-bold">Select Delivery Location ▾</span>
+      <span class="text-orange-700 font-bold">Set Delivery Location ▾</span>
     `;
   }
 }
 
-// Location Modal Controls
-function openLocationModal(canClose = true) {
-  const modal = document.getElementById('location-modal');
-  const closeBtn = document.getElementById('close-location-modal-btn');
+// Address / Checkout Modal Controls
+function openAddressModal(isCheckout = false, checkoutType = 'whatsapp') {
+  state.pendingCheckoutType = checkoutType;
+  const modal = document.getElementById('address-modal');
   const addrInput = document.getElementById('modal-address');
   const nameInput = document.getElementById('modal-name');
   const phoneInput = document.getElementById('modal-phone');
+  const skipBtn = document.getElementById('skip-address-btn');
+  const title = document.getElementById('address-modal-title');
 
   if (modal) {
     if (addrInput) addrInput.value = state.delivery.address;
     if (nameInput) nameInput.value = state.delivery.name;
     if (phoneInput) phoneInput.value = state.delivery.phone;
 
-    if (closeBtn) {
-      if (canClose || state.delivery.address) {
-        closeBtn.classList.remove('hidden');
-      } else {
-        closeBtn.classList.add('hidden');
-      }
+    if (isCheckout) {
+      if (title) title.textContent = "Confirm Delivery Address";
+      if (skipBtn) skipBtn.classList.remove('hidden');
+    } else {
+      if (title) title.textContent = "Your Delivery Address";
+      if (skipBtn) skipBtn.classList.add('hidden');
     }
 
     modal.classList.remove('hidden');
@@ -148,8 +145,8 @@ function openLocationModal(canClose = true) {
   }
 }
 
-function closeLocationModal() {
-  const modal = document.getElementById('location-modal');
+function closeAddressModal() {
+  const modal = document.getElementById('address-modal');
   if (modal) {
     modal.classList.add('hidden');
     document.body.style.overflow = '';
@@ -173,7 +170,7 @@ function closeCallModal() {
   }
 }
 
-// Render Category Tabs
+// Render Category Navigation
 function renderCategories() {
   const container = document.getElementById('category-tabs');
   if (!container) return;
@@ -196,7 +193,7 @@ function renderCategories() {
   });
 }
 
-// Filter Items based on live search, diet, and category
+// Filter Menu Items
 function getFilteredItems() {
   return MENU_ITEMS.filter(item => {
     const categoryMatch = (state.activeCategory === 'all') || (item.category === state.activeCategory);
@@ -232,7 +229,7 @@ function renderMenu() {
       <div class="col-span-full py-12 text-center bg-white rounded-2xl border border-stone-200 p-8">
         <div class="text-3xl mb-2">🔍</div>
         <h3 class="text-sm font-bold text-stone-800">No matching dishes</h3>
-        <p class="text-xs text-stone-500 mt-1">Try another search term or click All Dishes.</p>
+        <p class="text-xs text-stone-500 mt-1">Try another search term or view all dishes.</p>
         <button id="reset-search-btn" class="mt-3 px-4 py-1.5 bg-orange-600 text-white rounded-lg text-xs font-bold hover:bg-orange-700 transition cursor-pointer">
           Show All Dishes
         </button>
@@ -257,7 +254,7 @@ function renderMenu() {
     return `
       <div class="menu-card bg-white rounded-2xl border border-stone-200 overflow-hidden flex flex-col justify-between shadow-sm hover:shadow-md transition">
         <div>
-          <!-- Matching Dish Image -->
+          <!-- Dish Image -->
           <div class="relative w-full aspect-[4/3] bg-stone-100 overflow-hidden">
             <img 
               src="${item.image}" 
@@ -289,7 +286,7 @@ function renderMenu() {
           </div>
         </div>
 
-        <!-- Add & Quantity Control -->
+        <!-- Add & Stepper Control -->
         <div class="p-3.5 pt-0">
           ${qty === 0 ? `
             <button 
@@ -439,7 +436,7 @@ function renderCartDrawer(items, count, totalAmount) {
   }
 
   if (drawerAddrDisplay) {
-    drawerAddrDisplay.textContent = state.delivery.address || 'Address not set (tap Change)';
+    drawerAddrDisplay.textContent = state.delivery.address || 'Address not set (tap to set)';
   }
 
   if (count === 0) {
@@ -527,7 +524,7 @@ function closeCartDrawer() {
   }
 }
 
-// WhatsApp Order Compilation (Restaurant-Owned Official Dispatch Ticket)
+// Order Compilation (From Restaurant Point of View)
 function generateWhatsAppMessage() {
   const { items, totalAmount, count } = getCartTotals();
   if (count === 0) return null;
@@ -558,13 +555,12 @@ function generateWhatsAppMessage() {
   msg += `🚀 *Delivery:* FREE Home Delivery\n`;
   msg += `⏰ *Order Time:* ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}\n`;
   msg += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
-  msg += `📞 *aashirwad Kitchen Hotline:* 7004230188\n`;
+  msg += `📞 *aashirwad Contact:* 7004230188 / 9334047955\n`;
   msg += `Bansilal Chowk, Hazaribagh`;
 
   return msg;
 }
 
-// SMS Order Compilation (Restaurant-Owned Official Format)
 function generateSMSMessage() {
   const { items, totalAmount, count } = getCartTotals();
   if (count === 0) return null;
@@ -586,54 +582,47 @@ function generateSMSMessage() {
   sms += `\nTOTAL EXPECTED BILL: Rs.${totalAmount}\n`;
   sms += `Delivery: FREE\n`;
   if (notes) sms += `Note: ${notes}\n`;
-  sms += `Kitchen Hotline: 7004230188 (aashirwad)`;
+  sms += `aashirwad: 7004230188`;
 
   return sms;
 }
 
-// Send via WhatsApp to 7004230188
-function sendViaWhatsApp() {
+// Trigger Checkout: Asks for address if not set, else executes
+function triggerCheckout(type = 'whatsapp') {
   const { count } = getCartTotals();
   if (count === 0) {
     alert("Please select dishes first!");
     return;
   }
 
+  // If user hasn't set an address, ask first on checkout
   if (!state.delivery.address) {
-    openLocationModal(false);
+    openAddressModal(true, type);
     return;
   }
 
-  const message = generateWhatsAppMessage();
-  const phone = "917004230188"; // +91 7004230188
-  const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-  window.open(url, '_blank');
-  showToast("Opening WhatsApp with your order & delivery address...");
+  executeOrderDispatch(type);
 }
 
-// Send via SMS to 7004230188
-function sendViaSMS() {
-  const { count, totalAmount } = getCartTotals();
-  if (count === 0) {
-    alert("Please select dishes first!");
-    return;
+// Dispatches order to WhatsApp or SMS
+function executeOrderDispatch(type = 'whatsapp') {
+  if (type === 'whatsapp') {
+    const message = generateWhatsAppMessage();
+    const phone = "917004230188";
+    const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
+    showToast("Opening WhatsApp with your order & delivery address...");
+  } else {
+    const smsText = generateSMSMessage();
+    const phone = "7004230188";
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const separator = isIOS ? '&' : '?';
+    const smsUrl = `sms:${phone}${separator}body=${encodeURIComponent(smsText)}`;
+
+    copyOrderToClipboard(false);
+    window.location.href = smsUrl;
+    showToast(`Opening SMS to 7004230188...`);
   }
-
-  if (!state.delivery.address) {
-    openLocationModal(false);
-    return;
-  }
-
-  const smsText = generateSMSMessage();
-  const phone = "7004230188";
-
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-  const separator = isIOS ? '&' : '?';
-  const smsUrl = `sms:${phone}${separator}body=${encodeURIComponent(smsText)}`;
-
-  copyOrderToClipboard(false);
-  window.location.href = smsUrl;
-  showToast(`Opening SMS to 7004230188 (Total Expected: ₹${totalAmount})...`);
 }
 
 function copyOrderToClipboard(showUserToast = true) {
@@ -642,7 +631,7 @@ function copyOrderToClipboard(showUserToast = true) {
 
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(message).then(() => {
-      if (showUserToast) showToast("Order & Expected Price copied to clipboard!");
+      if (showUserToast) showToast("Order copied to clipboard!");
     });
   }
 }
@@ -681,29 +670,39 @@ function setupEventListeners() {
     });
   });
 
-  // Location Modal Triggers
-  document.getElementById('header-location-btn')?.addEventListener('click', () => openLocationModal(true));
+  // Top Section Location Change Trigger
+  document.getElementById('header-location-btn')?.addEventListener('click', () => openAddressModal(false));
   document.getElementById('drawer-change-addr-btn')?.addEventListener('click', () => {
     closeCartDrawer();
-    openLocationModal(true);
+    openAddressModal(false);
   });
-  document.getElementById('close-location-modal-btn')?.addEventListener('click', closeLocationModal);
+  document.getElementById('close-address-modal-btn')?.addEventListener('click', closeAddressModal);
 
-  // Location Form Save
-  document.getElementById('save-location-form')?.addEventListener('submit', (e) => {
+  // Address Modal Form Submit
+  document.getElementById('address-form')?.addEventListener('submit', (e) => {
     e.preventDefault();
     const addr = document.getElementById('modal-address').value;
     const name = document.getElementById('modal-name').value;
     const phone = document.getElementById('modal-phone').value;
 
-    if (!addr.trim()) {
-      alert("Please enter your delivery address!");
-      return;
-    }
-
     saveDeliveryData(addr, name, phone);
-    closeLocationModal();
-    showToast("Delivery address saved in cookies!");
+    closeAddressModal();
+    showToast("Address saved in permanent cookies!");
+
+    // If submitted during checkout flow, proceed to WhatsApp/SMS
+    if (state.pendingCheckoutType) {
+      executeOrderDispatch(state.pendingCheckoutType);
+      state.pendingCheckoutType = null;
+    }
+  });
+
+  // Skip Address Button (User can skip address on checkout if desired)
+  document.getElementById('skip-address-btn')?.addEventListener('click', () => {
+    closeAddressModal();
+    if (state.pendingCheckoutType) {
+      executeOrderDispatch(state.pendingCheckoutType);
+      state.pendingCheckoutType = null;
+    }
   });
 
   // Call Options Modal Triggers
@@ -718,15 +717,15 @@ function setupEventListeners() {
   document.getElementById('cart-drawer-overlay')?.addEventListener('click', closeCartDrawer);
   document.getElementById('clear-cart-btn')?.addEventListener('click', clearCart);
 
-  // Dispatch Triggers
-  document.getElementById('order-whatsapp-btn')?.addEventListener('click', sendViaWhatsApp);
-  document.getElementById('order-sms-btn')?.addEventListener('click', sendViaSMS);
+  // Order Actions
+  document.getElementById('order-whatsapp-btn')?.addEventListener('click', () => triggerCheckout('whatsapp'));
+  document.getElementById('order-sms-btn')?.addEventListener('click', () => triggerCheckout('sms'));
   document.getElementById('copy-order-btn')?.addEventListener('click', () => copyOrderToClipboard(true));
 
   // Escape Key
   window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
-      closeLocationModal();
+      closeAddressModal();
       closeCallModal();
       if (state.isDrawerOpen) closeCartDrawer();
     }
