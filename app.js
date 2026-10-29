@@ -136,17 +136,23 @@ function openAddressModal(isCheckout = false, checkoutType = null) {
     if (phoneInput) phoneInput.value = state.delivery.phone;
 
     if (isCheckout) {
+      // ORDER FLOW ONLY: User prompted during checkout
       if (title) title.textContent = "Delivery Address for Order";
       if (submitBtn) submitBtn.textContent = checkoutType === 'whatsapp' ? "Save & Proceed to WhatsApp" : "Save & Proceed to SMS";
       if (skipBtn) {
         skipBtn.textContent = checkoutType === 'whatsapp' ? "Skip Address & Continue to WhatsApp" : "Skip Address & Continue to SMS";
         skipBtn.classList.remove('hidden');
+        skipBtn.style.display = 'block';
       }
     } else {
-      // From top section: ONLY save address
+      // OUTSIDE ORDER FLOW (Top section / Header / General address edit)
+      // Skip address button should ONLY be when it is from order flow
       if (title) title.textContent = "Your Delivery Address";
       if (submitBtn) submitBtn.textContent = "Save Address";
-      if (skipBtn) skipBtn.classList.add('hidden');
+      if (skipBtn) {
+        skipBtn.classList.add('hidden');
+        skipBtn.style.display = 'none';
+      }
     }
 
     modal.classList.remove('hidden');
@@ -156,9 +162,14 @@ function openAddressModal(isCheckout = false, checkoutType = null) {
 
 function closeAddressModal() {
   const modal = document.getElementById('address-modal');
+  const skipBtn = document.getElementById('skip-address-btn');
   if (modal) {
     modal.classList.add('hidden');
     document.body.style.overflow = '';
+  }
+  if (skipBtn) {
+    skipBtn.classList.add('hidden');
+    skipBtn.style.display = 'none';
   }
 }
 
@@ -533,29 +544,29 @@ function closeCartDrawer() {
   }
 }
 
-// Order Compilation (From Restaurant Point of View)
+// Order Compilation (Message to restaurant requesting home delivery)
 function generateWhatsAppMessage() {
   const { items, totalAmount, count } = getCartTotals();
   if (count === 0) return null;
 
   const notes = document.getElementById('delivery-notes')?.value.trim() || state.delivery.notes;
   const address = state.delivery.address || 'Hazaribagh';
-  const name = state.delivery.name || 'Valued Customer';
+  const name = state.delivery.name || '';
   const phone = state.delivery.phone || '';
 
-  let msg = `🛵 *aashirwad - OFFICIAL HOME DELIVERY ORDER TICKET*\n`;
+  let msg = `🛵 *Home Delivery Order - aashirwad*\n`;
   msg += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
-  msg += `Thank you for choosing *aashirwad*. Your home delivery order:\n\n`;
+  msg += `Hello aashirwad, please deliver the following order:\n\n`;
   msg += `📍 *Delivery Address:* ${address}\n`;
-  msg += `👤 *Customer Name:* ${name}\n`;
+  if (name) msg += `👤 *Customer Name:* ${name}\n`;
   if (phone) msg += `📞 *Customer Phone:* ${phone}\n`;
   if (notes) msg += `📝 *Kitchen Instructions:* ${notes}\n`;
   msg += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
-  msg += `🍽️ *ORDERED DISHES & EXPECTED PRICE:*\n`;
+  msg += `🍽️ *ORDERED ITEMS:*\n`;
 
   items.forEach((item, index) => {
     msg += `${index + 1}. *${item.name}*\n`;
-    msg += `   • Quantity: ${item.quantity}  |  Unit Price: ₹${item.unitPrice}\n`;
+    msg += `   • Quantity: ${item.quantity}  |  Price: ₹${item.unitPrice} each\n`;
     msg += `   • Subtotal: ₹${item.lineTotal}\n`;
   });
 
@@ -564,8 +575,7 @@ function generateWhatsAppMessage() {
   msg += `🚀 *Delivery:* FREE Home Delivery\n`;
   msg += `⏰ *Order Time:* ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}\n`;
   msg += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
-  msg += `📞 *aashirwad Contact:* 7004230188 / 9334047955\n`;
-  msg += `Bansilal Chowk, Hazaribagh`;
+  msg += `Please confirm my order and estimated delivery time. Thank you!`;
 
   return msg;
 }
@@ -576,22 +586,23 @@ function generateSMSMessage() {
 
   const notes = document.getElementById('delivery-notes')?.value.trim() || state.delivery.notes;
   const address = state.delivery.address || 'Hazaribagh';
-  const name = state.delivery.name || 'Customer';
+  const name = state.delivery.name || '';
   const phone = state.delivery.phone ? ` (${state.delivery.phone})` : '';
 
   let sms = `[aashirwad - HOME DELIVERY ORDER]\n`;
-  sms += `Delivery To: ${name}${phone}\n`;
-  sms += `Address: ${address}\n\n`;
-  sms += `ORDER SUMMARY:\n`;
+  sms += `Hello aashirwad, please deliver this order:\n`;
+  sms += `Address: ${address}\n`;
+  if (name) sms += `Customer: ${name}${phone}\n`;
+  if (notes) sms += `Instructions: ${notes}\n`;
+  sms += `\nORDERED ITEMS:\n`;
 
   items.forEach((item, idx) => {
     sms += `${idx + 1}. ${item.name} x${item.quantity} @ Rs.${item.unitPrice} = Rs.${item.lineTotal}\n`;
   });
 
   sms += `\nTOTAL EXPECTED BILL: Rs.${totalAmount}\n`;
-  sms += `Delivery: FREE\n`;
-  if (notes) sms += `Note: ${notes}\n`;
-  sms += `aashirwad: 7004230188`;
+  sms += `Delivery: FREE\n\n`;
+  sms += `Please confirm my order. Thank you!`;
 
   return sms;
 }
@@ -695,22 +706,24 @@ function setupEventListeners() {
     const phone = document.getElementById('modal-phone').value;
 
     saveDeliveryData(addr, name, phone);
+    const targetCheckout = state.pendingCheckoutType;
     closeAddressModal();
     showToast("Address saved in permanent cookies!");
 
     // If submitted during checkout flow, proceed to WhatsApp/SMS
-    if (state.pendingCheckoutType) {
-      executeOrderDispatch(state.pendingCheckoutType);
+    if (targetCheckout) {
       state.pendingCheckoutType = null;
+      executeOrderDispatch(targetCheckout);
     }
   });
 
-  // Skip Address Button (User can skip address on checkout if desired)
+  // Skip Address Button (ONLY visible and usable during order flow)
   document.getElementById('skip-address-btn')?.addEventListener('click', () => {
+    const targetCheckout = state.pendingCheckoutType;
     closeAddressModal();
-    if (state.pendingCheckoutType) {
-      executeOrderDispatch(state.pendingCheckoutType);
+    if (targetCheckout) {
       state.pendingCheckoutType = null;
+      executeOrderDispatch(targetCheckout);
     }
   });
 
