@@ -1,26 +1,23 @@
 /**
- * Ashirwad Restaurant - Verified Menu Data
- * Location: Bansilal Chowk, Hazaribagh, Jharkhand
- * Order / SMS Hotline: +91 7004230188
- * Additional Restaurant Contacts: 9334047955, 6207228264, 9931579212
+ * Aashirwad - Home Delivery Menu Data
+ * All dish images are located in assets/veg/<dishname>/dish.png and assets/nonveg/<dishname>/dish.png
+ * Phone / SMS / WhatsApp: +91 7004230188
  */
 
 const MENU_CATEGORIES = [
-  { id: 'all', name: 'All Items', icon: '🍽️' },
-  { id: 'breads', name: 'Tandoor & Breads', icon: '🫓' },
-  { id: 'starters', name: 'Starters & Chinese', icon: '🥢' },
-  { id: 'momos', name: 'Momos & Fast Food', icon: '🥟' },
-  { id: 'main-veg', name: 'Main Course (Veg)', icon: '🥘' },
-  { id: 'main-nonveg', name: 'Main Course (Non-Veg)', icon: '🍗' },
+  { id: 'all', name: 'All Dishes', icon: '🍽️' },
+  { id: 'breads', name: 'Roti & Naan', icon: '🫓' },
+  { id: 'main-veg', name: 'Veg Main Course', icon: '🥘' },
+  { id: 'main-nonveg', name: 'Non-Veg Main Course', icon: '🍗' },
+  { id: 'momos', name: 'Momos', icon: '🥟' },
   { id: 'biryani-rice', name: 'Biryani & Rice', icon: '🍚' },
-  { id: 'noodles', name: 'Noodles & Chowmein', icon: '🍜' },
-  { id: 'pizzas-rolls', name: 'Pizzas & Rolls', icon: '🍕' },
-  { id: 'soups-beverages', name: 'Soups, Salads & Drinks', icon: '🥤' },
-  { id: 'desserts', name: 'Desserts', icon: '🍨' }
+  { id: 'noodles', name: 'Chowmein & Fast Food', icon: '🍜' },
+  { id: 'starters', name: 'Starters & Chilli', icon: '🥢' },
+  { id: 'drinks-desserts', name: 'Drinks & Desserts', icon: '🍨' }
 ];
 
 const MENU_ITEMS = [
-  // --- Tandoor & Breads ---
+  // --- Roti & Naan ---
   {
     id: 'b1',
     name: 'Makhan Roti',
@@ -28,8 +25,8 @@ const MENU_ITEMS = [
     price: 20,
     isVeg: true,
     bestseller: true,
-    description: 'Hot tandoori wheat roti generously brushed with pure fresh butter.',
-    image: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80'
+    description: 'Hot tandoori wheat roti brushed with fresh butter.',
+    image: 'assets/veg/makhan-roti/dish.png'
   },
   {
     id: 'b2',
@@ -38,8 +35,8 @@ const MENU_ITEMS = [
     price: 35,
     isVeg: true,
     bestseller: false,
-    description: 'Traditional refined flour flatbread baked fresh in clay tandoor oven.',
-    image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80'
+    description: 'Clay-tandoor baked soft refined flour naan.',
+    image: 'assets/veg/plain-naan/dish.png'
   },
   {
     id: 'b3',
@@ -48,28 +45,28 @@ const MENU_ITEMS = [
     price: 45,
     isVeg: true,
     bestseller: true,
-    description: 'Fluffy clay-oven baked naan coated with melting amul butter.',
-    image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=600&q=80'
+    description: 'Soft tandoori naan coated with melting butter.',
+    image: 'assets/veg/butter-naan/dish.png'
   },
   {
     id: 'b4',
-    name: 'Garlic Butter Naan',
+    name: 'Garlic Naan',
     category: 'breads',
     price: 65,
     isVeg: true,
     bestseller: true,
-    description: 'Aromatic tandoori naan infused with minced roasted garlic & coriander.',
-    image: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80'
+    description: 'Naan topped with chopped garlic and coriander.',
+    image: 'assets/veg/garlic-naan/dish.png'
   },
   {
     id: 'b5',
-    name: 'Plain Kulcha',
+    name: 'Stuffed Kulcha',
     category: 'breads',
-    price: 40,
+    price: 55,
     isVeg: true,
-    bestseller: false,
-    description: 'Soft and mildly leavened North Indian flatbread with sesame seeds.',
-    image: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=600&q=80'
+    bestseller: true,
+    description: 'Tandoori kulcha stuffed with spiced potato & veg filling.',
+    image: 'assets/veg/stuffed-kulcha/dish.png'
   },
   {
     id: 'b6',
@@ -78,215 +75,11 @@ const MENU_ITEMS = [
     price: 50,
     isVeg: true,
     bestseller: false,
-    description: 'Tandoori kulcha stuffed with tangy spiced potato and herbs.',
-    image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: 'b7',
-    name: 'Stuffed Kulcha',
-    category: 'breads',
-    price: 55,
-    isVeg: true,
-    bestseller: true,
-    description: 'Signature mixed vegetable and spices stuffed kulcha cooked crisp.',
-    image: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: 'b8',
-    name: 'Paneer Kulcha',
-    category: 'breads',
-    price: 70,
-    isVeg: true,
-    bestseller: false,
-    description: 'Fluffy kulcha filled with seasoned cottage cheese crumble.',
-    image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: 'b9',
-    name: 'Lachha Paratha',
-    category: 'breads',
-    price: 40,
-    isVeg: true,
-    bestseller: false,
-    description: 'Multi-layered crispy, flaky whole wheat paratha straight from tandoor.',
-    image: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80'
+    description: 'Mildly spiced, crisp tandoori kulcha.',
+    image: 'assets/veg/masala-kulcha/dish.png'
   },
 
-  // --- Momos & Fast Food (Featured on Menu Cover) ---
-  {
-    id: 'mo1',
-    name: 'Steamed Veg Momos (6 pcs)',
-    category: 'momos',
-    price: 80,
-    isVeg: true,
-    bestseller: true,
-    description: 'Fresh steamed dumplings packed with finely minced crunchy garden vegetables. Served with spicy red garlic dip.',
-    image: 'assets/dish_momos.jpg'
-  },
-  {
-    id: 'mo2',
-    name: 'Crispy Fried Veg Momos (6 pcs)',
-    category: 'momos',
-    price: 90,
-    isVeg: true,
-    bestseller: false,
-    description: 'Golden crisp fried vegetable momos served hot with house special fiery momo sauce and mayo.',
-    image: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: 'mo3',
-    name: 'Paneer Steamed Momos (6 pcs)',
-    category: 'momos',
-    price: 100,
-    isVeg: true,
-    bestseller: true,
-    description: 'Juicy steamed momos stuffed with spiced fresh cottage cheese crumble and herbs.',
-    image: 'assets/dish_momos.jpg'
-  },
-  {
-    id: 'mo4',
-    name: 'Chicken Steamed Momos (6 pcs)',
-    category: 'momos',
-    price: 110,
-    isVeg: false,
-    bestseller: true,
-    description: 'Tender dumplings filled with minced spiced chicken and onion, steamed fresh on order.',
-    image: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: 'mo5',
-    name: 'Chicken Fried Momos (6 pcs)',
-    category: 'momos',
-    price: 120,
-    isVeg: false,
-    bestseller: false,
-    description: 'Deep-fried crispy chicken dumplings with crunchy coating and savory filling.',
-    image: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: 'mo6',
-    name: 'Veg Kurkure Momos',
-    category: 'momos',
-    price: 120,
-    isVeg: true,
-    bestseller: true,
-    description: 'Super crunchy cornflake crusted momos fried golden, served with spicy dip.',
-    image: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=600&q=80'
-  },
-
-  // --- Starters & Chinese ---
-  {
-    id: 's1',
-    name: 'Mushroom Chilli',
-    category: 'starters',
-    price: 140,
-    isVeg: true,
-    bestseller: true,
-    description: 'Button mushrooms tossed in fiery garlic, soya sauce, capsicum and spring onions.',
-    image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: 's2',
-    name: 'Paneer Manchurian',
-    category: 'starters',
-    price: 190,
-    isVeg: true,
-    bestseller: true,
-    description: 'Crispy fried cottage cheese cubes tossed in spicy tangy Manchurian sauce.',
-    image: 'https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: 's3',
-    name: 'Paneer Chilli',
-    category: 'starters',
-    price: 190,
-    isVeg: true,
-    bestseller: true,
-    description: 'Classic Indo-Chinese appetizer with fresh paneer cubes and crunchy bell peppers.',
-    image: 'https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: 's4',
-    name: 'Paneer Garlic',
-    category: 'starters',
-    price: 200,
-    isVeg: true,
-    bestseller: false,
-    description: 'Golden paneer tossed with aromatic crushed garlic and oriental spices.',
-    image: 'https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: 's5',
-    name: 'Paneer Finger',
-    category: 'starters',
-    price: 210,
-    isVeg: true,
-    bestseller: false,
-    description: 'Crisp crumbed paneer batons served with house special spicy dip.',
-    image: 'https://images.unsplash.com/photo-1541544741938-0af808871cc0?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: 's6',
-    name: 'Veg Schezwan Manchurian',
-    category: 'starters',
-    price: 210,
-    isVeg: true,
-    bestseller: false,
-    description: 'Minced vegetable balls simmered in punchy Sichuan pepper & chilli glaze.',
-    image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: 's7',
-    name: 'Chicken Garlic',
-    category: 'starters',
-    price: 230,
-    isVeg: false,
-    bestseller: true,
-    description: 'Succulent chicken tenders tossed with roasted garlic, green chillies & scallions.',
-    image: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: 's8',
-    name: 'Chicken Finger',
-    category: 'starters',
-    price: 240,
-    isVeg: false,
-    bestseller: false,
-    description: 'Golden crumb-fried chicken strips marinated in secret spices.',
-    image: 'https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: 's9',
-    name: 'Boneless Lemon Chicken Chilli',
-    category: 'starters',
-    price: 240,
-    isVeg: false,
-    bestseller: true,
-    description: 'Tender boneless chicken glazed in a zesty lemon-chilli sauce.',
-    image: 'https://images.unsplash.com/photo-1527477378372-132d7211bf7b?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: 's10',
-    name: 'Chicken Lollipop (6 pcs)',
-    category: 'starters',
-    price: 250,
-    isVeg: false,
-    bestseller: true,
-    description: 'Indo-Chinese favorite chicken wings shaped like lollipops, crisp fried with hot garlic sauce.',
-    image: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: 's11',
-    name: 'Tandoori Roast Chicken (Special)',
-    category: 'starters',
-    price: 270,
-    isVeg: false,
-    bestseller: true,
-    description: 'Charcoal roasted chicken leg marinated in yogurt, tandoori masala and lemon. Pictured on our original menu.',
-    image: 'https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=600&q=80'
-  },
-
-  // --- Main Course (Veg) ---
+  // --- Veg Main Course ---
   {
     id: 'mv1',
     name: 'Paneer Butter Masala',
@@ -294,8 +87,8 @@ const MENU_ITEMS = [
     price: 210,
     isVeg: true,
     bestseller: true,
-    description: 'Fresh cottage cheese cubes cooked in rich, velvety tomato and cashew nut gravy.',
-    image: 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=600&q=80'
+    description: 'Fresh paneer cubes in velvety tomato and cashew gravy.',
+    image: 'assets/veg/paneer-butter-masala/dish.png'
   },
   {
     id: 'mv2',
@@ -304,28 +97,28 @@ const MENU_ITEMS = [
     price: 230,
     isVeg: true,
     bestseller: true,
-    description: 'Royal Mughlai style paneer cooked in a mildly sweet, aromatic almond cream gravy.',
-    image: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=600&q=80'
+    description: 'Cottage cheese in rich creamy almond Mughlai gravy.',
+    image: 'assets/veg/paneer-shahi-korma/dish.png'
   },
   {
     id: 'mv3',
-    name: 'Veg Handi',
-    category: 'main-veg',
-    price: 240,
-    isVeg: true,
-    bestseller: true,
-    description: 'Assorted seasonal garden vegetables slow cooked in traditional earthen handi style spices.',
-    image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: 'mv4',
     name: 'Kadai Paneer',
     category: 'main-veg',
     price: 220,
     isVeg: true,
     bestseller: false,
-    description: 'Paneer cubes and crunchy bell peppers braised in freshly pounded kadai spices.',
-    image: 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=600&q=80'
+    description: 'Paneer tossed with capsicum and freshly pounded kadai spices.',
+    image: 'assets/veg/kadai-paneer/dish.png'
+  },
+  {
+    id: 'mv4',
+    name: 'Veg Handi',
+    category: 'main-veg',
+    price: 240,
+    isVeg: true,
+    bestseller: true,
+    description: 'Assorted garden vegetables slow-cooked in handi spices.',
+    image: 'assets/veg/veg-handi/dish.png'
   },
   {
     id: 'mv5',
@@ -334,8 +127,8 @@ const MENU_ITEMS = [
     price: 170,
     isVeg: true,
     bestseller: true,
-    description: 'Black lentils slow cooked overnight on charcoal tandoor with cream and butter.',
-    image: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=600&q=80'
+    description: 'Slow-simmered black lentils with butter and cream.',
+    image: 'assets/veg/dal-makhani/dish.png'
   },
   {
     id: 'mv6',
@@ -344,31 +137,21 @@ const MENU_ITEMS = [
     price: 130,
     isVeg: true,
     bestseller: false,
-    description: 'Yellow arhar dal tempered with cumin, garlic, red chillies and fragrant desi ghee.',
-    image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=600&q=80'
+    description: 'Yellow lentils tempered with cumin, garlic and desi ghee.',
+    image: 'assets/veg/dal-tadka/dish.png'
   },
   {
     id: 'mv7',
-    name: 'Malai Kofta',
-    category: 'main-veg',
-    price: 220,
-    isVeg: true,
-    bestseller: false,
-    description: 'Melt-in-mouth cottage cheese and potato dumplings in luscious golden creamy gravy.',
-    image: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: 'mv8',
     name: 'Mushroom Masala',
     category: 'main-veg',
     price: 210,
     isVeg: true,
     bestseller: false,
-    description: 'Tender button mushrooms cooked in thick onion-tomato gravy with garam masala.',
-    image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80'
+    description: 'Fresh button mushrooms simmered in thick spiced onion-tomato gravy.',
+    image: 'assets/veg/mushroom-masala/dish.png'
   },
 
-  // --- Main Course (Non-Veg) ---
+  // --- Non-Veg Main Course ---
   {
     id: 'mn1',
     name: 'Chicken Murgh Masala',
@@ -376,28 +159,28 @@ const MENU_ITEMS = [
     price: 410,
     isVeg: false,
     bestseller: true,
-    description: 'Ashirwad signature royal chicken delicacy cooked in rich minced chicken and egg gravy.',
-    image: 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=600&q=80'
+    description: 'Royal chicken specialty cooked in minced chicken and egg gravy.',
+    image: 'assets/nonveg/chicken-murgh-masala/dish.png'
   },
   {
     id: 'mn2',
+    name: 'Butter Chicken',
+    category: 'main-nonveg',
+    price: 340,
+    isVeg: false,
+    bestseller: true,
+    description: 'Roasted chicken cooked in rich buttery makhani gravy.',
+    image: 'assets/nonveg/butter-chicken/dish.png'
+  },
+  {
+    id: 'mn3',
     name: 'Chicken Shahi Korma',
     category: 'main-nonveg',
     price: 360,
     isVeg: false,
     bestseller: true,
-    description: 'Tender chicken pieces simmered in silky cashew nut, yogurt and saffron gravy.',
-    image: 'https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: 'mn3',
-    name: 'Butter Chicken (Murgh Makhani)',
-    category: 'main-nonveg',
-    price: 340,
-    isVeg: false,
-    bestseller: true,
-    description: 'Roasted tandoori chicken cooked in mildly spiced creamy tomato & makhani butter sauce.',
-    image: 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=600&q=80'
+    description: 'Tender chicken pieces simmered in silky cashew and saffron cream.',
+    image: 'assets/nonveg/chicken-shahi-korma/dish.png'
   },
   {
     id: 'mn4',
@@ -406,8 +189,8 @@ const MENU_ITEMS = [
     price: 320,
     isVeg: false,
     bestseller: false,
-    description: 'Spiced chicken cooked with crunchy bell peppers and fresh whole spices in cast iron wok.',
-    image: 'https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?auto=format&fit=crop&w=600&q=80'
+    description: 'Spiced chicken tossed with capsicum and freshly crushed whole spices.',
+    image: 'assets/nonveg/kadai-chicken/dish.png'
   },
   {
     id: 'mn5',
@@ -416,30 +199,82 @@ const MENU_ITEMS = [
     price: 330,
     isVeg: false,
     bestseller: false,
-    description: 'Rustic countryside style chicken slow-simmered in clay pot with caramelized onions.',
-    image: 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=600&q=80'
+    description: 'Slow-simmered countryside chicken cooked in clay pot gravy.',
+    image: 'assets/nonveg/chicken-handi/dish.png'
   },
   {
     id: 'mn6',
-    name: 'Chicken Curry (Homestyle)',
+    name: 'Homestyle Chicken Curry',
     category: 'main-nonveg',
     price: 260,
     isVeg: false,
     bestseller: false,
-    description: 'Desi style flavorful chicken curry prepared with traditional spices.',
-    image: 'https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?auto=format&fit=crop&w=600&q=80'
+    description: 'Desi style flavorful chicken curry prepared with aromatic spices.',
+    image: 'assets/nonveg/chicken-curry/dish.png'
+  },
+
+  // --- Momos ---
+  {
+    id: 'mo1',
+    name: 'Steamed Veg Momos (6 pcs)',
+    category: 'momos',
+    price: 80,
+    isVeg: true,
+    bestseller: true,
+    description: 'Fresh steamed dumplings packed with finely minced crunchy vegetables. Served with spicy momo dip.',
+    image: 'assets/veg/steamed-veg-momos/dish.png'
+  },
+  {
+    id: 'mo2',
+    name: 'Fried Veg Momos (6 pcs)',
+    category: 'momos',
+    price: 90,
+    isVeg: true,
+    bestseller: false,
+    description: 'Golden fried crispy momos served with fiery momo chutney.',
+    image: 'assets/veg/fried-veg-momos/dish.png'
+  },
+  {
+    id: 'mo3',
+    name: 'Paneer Momos (6 pcs)',
+    category: 'momos',
+    price: 100,
+    isVeg: true,
+    bestseller: true,
+    description: 'Steamed dumplings filled with seasoned fresh cottage cheese.',
+    image: 'assets/veg/paneer-momos/dish.png'
+  },
+  {
+    id: 'mo4',
+    name: 'Steamed Chicken Momos (6 pcs)',
+    category: 'momos',
+    price: 110,
+    isVeg: false,
+    bestseller: true,
+    description: 'Juicy steamed dumplings loaded with seasoned minced chicken.',
+    image: 'assets/nonveg/steamed-chicken-momos/dish.png'
+  },
+  {
+    id: 'mo5',
+    name: 'Fried Chicken Momos (6 pcs)',
+    category: 'momos',
+    price: 120,
+    isVeg: false,
+    bestseller: false,
+    description: 'Crisp deep-fried chicken dumplings with hot dipping sauce.',
+    image: 'assets/nonveg/fried-chicken-momos/dish.png'
   },
 
   // --- Biryani & Rice ---
   {
     id: 'r1',
-    name: 'Ashirwad Special Veg Biryani',
+    name: 'Aashirwad Special Veg Biryani',
     category: 'biryani-rice',
     price: 280,
     isVeg: true,
     bestseller: true,
-    description: 'Dum-cooked long grain Basmati rice layered with fresh veggies, paneer, fried onions & saffron. Served with raita.',
-    image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=600&q=80'
+    description: 'Basmati rice dum-cooked with vegetables, paneer, brown onions & saffron. Served with raita.',
+    image: 'assets/veg/veg-biryani/dish.png'
   },
   {
     id: 'r2',
@@ -448,51 +283,51 @@ const MENU_ITEMS = [
     price: 260,
     isVeg: false,
     bestseller: true,
-    description: 'Classic aromatic Hyderabadi style chicken dum biryani served with spicy gravy and cooling raita.',
-    image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=600&q=80'
+    description: 'Fragrant chicken dum biryani served with gravy and cooling raita.',
+    image: 'assets/nonveg/chicken-dum-biryani/dish.png'
   },
   {
     id: 'r3',
-    name: 'Shahi Pulao',
-    category: 'biryani-rice',
-    price: 190,
-    isVeg: true,
-    bestseller: false,
-    description: 'Fragrant basmati rice tossed with roasted cashews, raisins, fruits and paneer.',
-    image: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: 'r4',
-    name: 'Green Peas Pulao',
-    category: 'biryani-rice',
-    price: 155,
-    isVeg: true,
-    bestseller: false,
-    description: 'Basmati rice tempered with sweet green peas, whole cumin and ghee.',
-    image: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: 'r5',
     name: 'Veg Fried Rice',
     category: 'biryani-rice',
     price: 155,
     isVeg: true,
     bestseller: true,
-    description: 'Wok-tossed basmati rice with finely chopped carrots, beans, baby corn & spring onion.',
-    image: 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=600&q=80'
+    description: 'Wok-tossed basmati rice with beans, carrots and spring onions.',
+    image: 'assets/veg/veg-fried-rice/dish.png'
   },
   {
-    id: 'r6',
+    id: 'r4',
+    name: 'Chicken Fried Rice',
+    category: 'biryani-rice',
+    price: 185,
+    isVeg: false,
+    bestseller: false,
+    description: 'Chinese style fried rice tossed with chicken shreds and egg.',
+    image: 'assets/nonveg/chicken-fried-rice/dish.png'
+  },
+  {
+    id: 'r5',
     name: 'Jeera Rice',
     category: 'biryani-rice',
     price: 120,
     isVeg: true,
     bestseller: false,
-    description: 'Fluffy steamed basmati rice tempered with golden roasted cumin seeds.',
-    image: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=600&q=80'
+    description: 'Fluffy steamed basmati rice tempered with roasted cumin.',
+    image: 'assets/veg/jeera-rice/dish.png'
+  },
+  {
+    id: 'r6',
+    name: 'Veg Pulao',
+    category: 'biryani-rice',
+    price: 155,
+    isVeg: true,
+    bestseller: false,
+    description: 'Basmati rice cooked with sweet green peas and whole spices.',
+    image: 'assets/veg/veg-pulao/dish.png'
   },
 
-  // --- Noodles & Chowmein ---
+  // --- Chowmein & Fast Food ---
   {
     id: 'n1',
     name: 'Veg Chowmein',
@@ -500,8 +335,8 @@ const MENU_ITEMS = [
     price: 95,
     isVeg: true,
     bestseller: true,
-    description: 'Street-style wok-tossed noodles with crunchy shredded vegetables and oriental spices.',
-    image: 'https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=80'
+    description: 'Street style wok-tossed noodles with shredded crunchy vegetables.',
+    image: 'assets/veg/veg-chowmein/dish.png'
   },
   {
     id: 'n2',
@@ -510,192 +345,201 @@ const MENU_ITEMS = [
     price: 120,
     isVeg: false,
     bestseller: true,
-    description: 'Stir-fried noodles loaded with spiced chicken shreds, garlic and fresh crunchy greens.',
-    image: 'https://images.unsplash.com/photo-1612927601601-6638404737ce?auto=format&fit=crop&w=600&q=80'
+    description: 'Stir-fried noodles loaded with shredded spiced chicken and veggies.',
+    image: 'assets/nonveg/chicken-chowmein/dish.png'
   },
   {
     id: 'n3',
-    name: 'Paneer Chowmein',
-    category: 'noodles',
-    price: 120,
-    isVeg: true,
-    bestseller: false,
-    description: 'Desi wok chowmein tossed with fried cottage cheese strips and soy seasonings.',
-    image: 'https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: 'n4',
     name: 'Veg Hong Kong Chowmein',
     category: 'noodles',
     price: 200,
     isVeg: true,
-    bestseller: true,
-    description: 'Premium Hong Kong style crispy & saucy noodles with exotic vegetables and mushrooms.',
-    image: 'https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=80'
+    bestseller: false,
+    description: 'Hong Kong style crispy and saucy noodles with exotic veggies.',
+    image: 'assets/veg/veg-hong-kong-chowmein/dish.png'
   },
-
-  // --- Pizzas & Rolls ---
   {
-    id: 'p1',
+    id: 'n4',
     name: 'Veg Spring Roll',
-    category: 'pizzas-rolls',
+    category: 'noodles',
     price: 210,
     isVeg: true,
     bestseller: true,
-    description: 'Golden crispy pastry rolls stuffed with sautéed Asian vegetables. Served with hot dip.',
-    image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80'
+    description: 'Crispy rolls filled with sautéed Asian vegetables.',
+    image: 'assets/veg/veg-spring-roll/dish.png'
   },
   {
-    id: 'p2',
+    id: 'n5',
     name: 'Chicken Spring Roll',
-    category: 'pizzas-rolls',
+    category: 'noodles',
     price: 245,
     isVeg: false,
-    bestseller: true,
-    description: 'Crisp hand-rolled wraps packed with spiced chicken and crunchy veggies.',
-    image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: 'p3',
-    name: 'Onion Pizza',
-    category: 'pizzas-rolls',
-    price: 180,
-    isVeg: true,
     bestseller: false,
-    description: 'Baked thin crust topped with sweet red onions, pizza herbs & 100% mozzarella cheese.',
-    image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80'
+    description: 'Crispy golden rolls stuffed with seasoned minced chicken.',
+    image: 'assets/nonveg/chicken-spring-roll/dish.png'
   },
   {
-    id: 'p4',
-    name: 'Capsicum & Corn Pizza',
-    category: 'pizzas-rolls',
-    price: 200,
-    isVeg: true,
-    bestseller: false,
-    description: 'Crispy crust loaded with golden sweet corn kernels, diced capsicum and melted cheese.',
-    image: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: 'p5',
-    name: 'Non-Veg Mixed Pizza',
-    category: 'pizzas-rolls',
-    price: 220,
-    isVeg: false,
-    bestseller: true,
-    description: 'Chef special pizza overloaded with spiced chicken chunks, onion, capsicum & mozzarella.',
-    image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: 'p6',
+    id: 'n6',
     name: 'Paneer Kathi Roll',
-    category: 'pizzas-rolls',
+    category: 'noodles',
     price: 90,
     isVeg: true,
     bestseller: false,
-    description: 'Crispy flaky paratha rolled with tawa paneer, tangy mint chutney and sliced onions.',
-    image: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80'
+    description: 'Paratha rolled with seasoned paneer, mint chutney & onions.',
+    image: 'assets/veg/paneer-roll/dish.png'
   },
   {
-    id: 'p7',
+    id: 'n7',
     name: 'Chicken Egg Roll',
-    category: 'pizzas-rolls',
+    category: 'noodles',
     price: 110,
     isVeg: false,
     bestseller: true,
-    description: 'Kolkatta style egg paratha wrap loaded with spicy roasted chicken chunks and sauces.',
-    image: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80'
+    description: 'Egg paratha wrap loaded with spicy chicken chunks and chutney.',
+    image: 'assets/nonveg/chicken-egg-roll/dish.png'
   },
-
-  // --- Soups, Salads & Drinks ---
   {
-    id: 'sb1',
-    name: 'Veg Sweet Corn Soup',
-    category: 'soups-beverages',
-    price: 90,
+    id: 'n8',
+    name: 'Onion Pizza',
+    category: 'noodles',
+    price: 180,
     isVeg: true,
     bestseller: false,
-    description: 'Comforting warm soup loaded with crushed sweet American corn & fine vegetables.',
-    image: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=600&q=80'
+    description: 'Baked crust topped with sweet onions, herbs & 100% mozzarella.',
+    image: 'assets/veg/onion-pizza/dish.png'
+  },
+
+  // --- Starters & Chilli ---
+  {
+    id: 's1',
+    name: 'Mushroom Chilli',
+    category: 'starters',
+    price: 140,
+    isVeg: true,
+    bestseller: true,
+    description: 'Button mushrooms tossed in fiery garlic, soy and capsicum.',
+    image: 'assets/veg/mushroom-chilli/dish.png'
   },
   {
-    id: 'sb2',
-    name: 'Chicken Manchow Soup',
-    category: 'soups-beverages',
-    price: 120,
+    id: 's2',
+    name: 'Paneer Chilli',
+    category: 'starters',
+    price: 190,
+    isVeg: true,
+    bestseller: true,
+    description: 'Crispy cottage cheese cubes tossed in spicy chilli sauce.',
+    image: 'assets/veg/paneer-chilli/dish.png'
+  },
+  {
+    id: 's3',
+    name: 'Paneer Manchurian',
+    category: 'starters',
+    price: 190,
+    isVeg: true,
+    bestseller: false,
+    description: 'Fried paneer tossed in tangy Manchurian sauce.',
+    image: 'assets/veg/paneer-manchurian/dish.png'
+  },
+  {
+    id: 's4',
+    name: 'Chicken Garlic',
+    category: 'starters',
+    price: 230,
     isVeg: false,
     bestseller: true,
-    description: 'Spicy dark chicken broth with garlic, ginger, coriander and crispy fried noodles on top.',
-    image: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=600&q=80'
+    description: 'Chicken tossed with roasted garlic, green chillies and scallions.',
+    image: 'assets/nonveg/chicken-garlic/dish.png'
   },
   {
-    id: 'sb3',
-    name: 'Fresh Green Salad',
-    category: 'soups-beverages',
-    price: 60,
-    isVeg: true,
+    id: 's5',
+    name: 'Chicken Finger',
+    category: 'starters',
+    price: 240,
+    isVeg: false,
     bestseller: false,
-    description: 'Freshly sliced cucumbers, tomatoes, onions, carrots and green chillies with lemon. As shown on restaurant menu card.',
-    image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=600&q=80'
+    description: 'Crispy crumb-fried chicken strips with dip.',
+    image: 'assets/nonveg/chicken-finger/dish.png'
   },
   {
-    id: 'sb4',
-    name: 'Special Sweet Lassi',
-    category: 'soups-beverages',
-    price: 60,
-    isVeg: true,
+    id: 's6',
+    name: 'Chicken Lollipop (6 pcs)',
+    category: 'starters',
+    price: 250,
+    isVeg: false,
     bestseller: true,
-    description: 'Thick churned creamy yogurt lassi garnished with malai and cardamom powder.',
-    image: 'https://images.unsplash.com/photo-1527661591475-527312dd65f5?auto=format&fit=crop&w=600&q=80'
+    description: 'Crispy fried chicken lollipops served with hot garlic sauce.',
+    image: 'assets/nonveg/chicken-lollipop/dish.png'
+  },
+  {
+    id: 's7',
+    name: 'Tandoori Roast Chicken',
+    category: 'starters',
+    price: 270,
+    isVeg: false,
+    bestseller: true,
+    description: 'Charcoal roasted chicken marinated in yogurt and tandoori spices.',
+    image: 'assets/nonveg/tandoori-chicken/dish.png'
   },
 
-  // --- Desserts ---
+  // --- Drinks & Desserts ---
   {
     id: 'd1',
-    name: 'Hot Gulab Jamun (2 pcs)',
-    category: 'desserts',
-    price: 50,
+    name: 'Special Sweet Lassi',
+    category: 'drinks-desserts',
+    price: 60,
     isVeg: true,
     bestseller: true,
-    description: 'Soft melt-in-the-mouth khoya balls soaked in warm saffron-cardamom sugar syrup.',
-    image: 'https://images.unsplash.com/photo-1667290074218-c21d84877714?auto=format&fit=crop&w=600&q=80'
+    description: 'Thick creamy churned yogurt lassi with cardamom.',
+    image: 'assets/veg/sweet-lassi/dish.png'
   },
   {
     id: 'd2',
-    name: 'Fruit Salad with Ice Cream',
-    category: 'desserts',
-    price: 140,
+    name: 'Hot Gulab Jamun (2 pcs)',
+    category: 'drinks-desserts',
+    price: 50,
+    isVeg: true,
+    bestseller: true,
+    description: 'Soft khoya dumplings in warm saffron sugar syrup.',
+    image: 'assets/veg/gulab-jamun/dish.png'
+  },
+  {
+    id: 'd3',
+    name: 'Fresh Green Salad',
+    category: 'drinks-desserts',
+    price: 60,
     isVeg: true,
     bestseller: false,
-    description: 'Fresh seasonal mixed fruits bowl served with a scoop of creamy vanilla ice cream.',
-    image: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=600&q=80'
+    description: 'Sliced cucumbers, tomatoes, carrots, onion and green chillies.',
+    image: 'assets/veg/green-salad/dish.png'
+  },
+  {
+    id: 'd4',
+    name: 'Veg Sweet Corn Soup',
+    category: 'drinks-desserts',
+    price: 90,
+    isVeg: true,
+    bestseller: false,
+    description: 'Warm comforting soup with sweet corn kernels.',
+    image: 'assets/veg/sweet-corn-soup/dish.png'
+  },
+  {
+    id: 'd5',
+    name: 'Chicken Manchow Soup',
+    category: 'drinks-desserts',
+    price: 120,
+    isVeg: false,
+    bestseller: false,
+    description: 'Spicy chicken soup served with crunchy fried noodles.',
+    image: 'assets/nonveg/chicken-manchow-soup/dish.png'
   }
 ];
 
-// Restaurant Contact & Metadata (Verified from Menu Card & Google Maps)
+// Restaurant Contact Information
 const RESTAURANT_INFO = {
-  name: "Ashirwad Restaurant",
-  hindiName: "आशीर्वाद रेस्टोरेंट",
-  type: "A Family Restaurant (VEG & NON VEG)",
-  tagline: "Authentic Multi-Cuisine Dining & Tandoor Specialist",
-  primaryHotline: "7004230188",
-  primaryHotlineDisplay: "+91 70042 30188",
+  name: "aashirwad",
+  displayName: "Aashirwad",
+  phone: "7004230188",
   whatsappNumber: "917004230188",
-  printedNumbers: ["9334047955", "6207228264", "9931579212"],
-  address: "Near Bansilal Chowk / Kani Bazar Chowk, Munka Bagicha, Hazaribagh, Jharkhand - 825301",
-  coordinates: {
-    lat: 23.9928812,
-    lng: 85.3616478
-  },
-  googleMapsUrl: "https://www.google.co.in/maps/place/Ashirwad+Restaurant/@23.9928812,85.3616478,17z/data=!4m6!3m5!1s0x39f49c1b13d3edcf:0xce0a5655f48c7786!8m2!3d23.9928812!4d85.3616478!16s%2Fg%2F11cs5jppyh",
-  timings: "10:30 AM – 10:30 PM (All 7 Days)",
-  amenities: [
-    "❄️ Fully Air Conditioned",
-    "🚚 Free Home Delivery",
-    "💧 Hygienic Aquaguard Bacteria Free Water",
-    "🚭 Smoking & Drinking Strictly Prohibited",
-    "🎊 Banquet Hall Facility Available",
-    "🚗 Customer Parking Facility"
-  ],
-  storefrontImage: "assets/restaurant_storefront.jpg",
-  menuCoverImage: "assets/menu_photo.jpg"
+  city: "Hazaribagh",
+  deliveryNote: "Free Home Delivery in Hazaribagh"
 };
