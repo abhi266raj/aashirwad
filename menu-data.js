@@ -1,8 +1,14 @@
 /**
- * Aashirwad - Home Delivery Menu Data
- * All dish images are located in assets/veg/<dishname>/dish.png and assets/nonveg/<dishname>/dish.png
- * Phone / SMS / WhatsApp: +91 7004230188
+ * aashirwad - Verified Restaurant Data & Menu
+ * All dish images are stored in assets/veg/<dishname>/dish.png
  */
+
+const RESTAURANT_PHONES = [
+  { number: "7004230188", display: "+91 70042 30188", label: "Primary Hotline & WhatsApp", isPrimary: true },
+  { number: "9334047955", display: "+91 93340 47955", label: "Restaurant Counter / Reception", isPrimary: false },
+  { number: "6207228264", display: "+91 62072 28264", label: "Kitchen & Delivery Desk", isPrimary: false },
+  { number: "9931579212", display: "+91 99315 79212", label: "Alternate Support Line", isPrimary: false }
+];
 
 const MENU_CATEGORIES = [
   { id: 'all', name: 'All Dishes', icon: '🍽️' },
@@ -160,7 +166,7 @@ const MENU_ITEMS = [
     isVeg: false,
     bestseller: true,
     description: 'Royal chicken specialty cooked in minced chicken and egg gravy.',
-    image: 'assets/nonveg/chicken-murgh-masala/dish.png'
+    image: 'assets/veg/chicken-murgh-masala/dish.png'
   },
   {
     id: 'mn2',
@@ -170,7 +176,7 @@ const MENU_ITEMS = [
     isVeg: false,
     bestseller: true,
     description: 'Roasted chicken cooked in rich buttery makhani gravy.',
-    image: 'assets/nonveg/butter-chicken/dish.png'
+    image: 'assets/veg/butter-chicken/dish.png'
   },
   {
     id: 'mn3',
@@ -180,7 +186,7 @@ const MENU_ITEMS = [
     isVeg: false,
     bestseller: true,
     description: 'Tender chicken pieces simmered in silky cashew and saffron cream.',
-    image: 'assets/nonveg/chicken-shahi-korma/dish.png'
+    image: 'assets/veg/chicken-shahi-korma/dish.png'
   },
   {
     id: 'mn4',
@@ -190,7 +196,7 @@ const MENU_ITEMS = [
     isVeg: false,
     bestseller: false,
     description: 'Spiced chicken tossed with capsicum and freshly crushed whole spices.',
-    image: 'assets/nonveg/kadai-chicken/dish.png'
+    image: 'assets/veg/kadai-chicken/dish.png'
   },
   {
     id: 'mn5',
@@ -200,7 +206,7 @@ const MENU_ITEMS = [
     isVeg: false,
     bestseller: false,
     description: 'Slow-simmered countryside chicken cooked in clay pot gravy.',
-    image: 'assets/nonveg/chicken-handi/dish.png'
+    image: 'assets/veg/chicken-handi/dish.png'
   },
   {
     id: 'mn6',
@@ -210,7 +216,7 @@ const MENU_ITEMS = [
     isVeg: false,
     bestseller: false,
     description: 'Desi style flavorful chicken curry prepared with aromatic spices.',
-    image: 'assets/nonveg/chicken-curry/dish.png'
+    image: 'assets/veg/chicken-curry/dish.png'
   },
 
   // --- Momos ---
@@ -252,7 +258,7 @@ const MENU_ITEMS = [
     isVeg: false,
     bestseller: true,
     description: 'Juicy steamed dumplings loaded with seasoned minced chicken.',
-    image: 'assets/nonveg/steamed-chicken-momos/dish.png'
+    image: 'assets/veg/steamed-chicken-momos/dish.png'
   },
   {
     id: 'mo5',
@@ -262,7 +268,7 @@ const MENU_ITEMS = [
     isVeg: false,
     bestseller: false,
     description: 'Crisp deep-fried chicken dumplings with hot dipping sauce.',
-    image: 'assets/nonveg/fried-chicken-momos/dish.png'
+    image: 'assets/veg/fried-chicken-momos/dish.png'
   },
 
   // --- Biryani & Rice ---
@@ -284,7 +290,7 @@ const MENU_ITEMS = [
     isVeg: false,
     bestseller: true,
     description: 'Fragrant chicken dum biryani served with gravy and cooling raita.',
-    image: 'assets/nonveg/chicken-dum-biryani/dish.png'
+    image: 'assets/veg/chicken-dum-biryani/dish.png'
   },
   {
     id: 'r3',
@@ -304,7 +310,7 @@ const MENU_ITEMS = [
     isVeg: false,
     bestseller: false,
     description: 'Chinese style fried rice tossed with chicken shreds and egg.',
-    image: 'assets/nonveg/chicken-fried-rice/dish.png'
+    image: 'assets/veg/chicken-fried-rice/dish.png'
   },
   {
     id: 'r5',
@@ -346,7 +352,7 @@ const MENU_ITEMS = [
     isVeg: false,
     bestseller: true,
     description: 'Stir-fried noodles loaded with shredded spiced chicken and veggies.',
-    image: 'assets/nonveg/chicken-chowmein/dish.png'
+    image: 'assets/veg/chicken-chowmein/dish.png'
   },
   {
     id: 'n3',
@@ -376,7 +382,7 @@ const MENU_ITEMS = [
     isVeg: false,
     bestseller: false,
     description: 'Crispy golden rolls stuffed with seasoned minced chicken.',
-    image: 'assets/nonveg/chicken-spring-roll/dish.png'
+    image: 'assets/veg/chicken-spring-roll/dish.png'
   },
   {
     id: 'n6',
@@ -396,7 +402,7 @@ const MENU_ITEMS = [
     isVeg: false,
     bestseller: true,
     description: 'Egg paratha wrap loaded with spicy chicken chunks and chutney.',
-    image: 'assets/nonveg/chicken-egg-roll/dish.png'
+    image: 'assets/veg/chicken-egg-roll/dish.png'
   },
   {
     id: 'n8',
@@ -448,7 +454,7 @@ const MENU_ITEMS = [
     isVeg: false,
     bestseller: true,
     description: 'Chicken tossed with roasted garlic, green chillies and scallions.',
-    image: 'assets/nonveg/chicken-garlic/dish.png'
+    image: 'assets/veg/chicken-garlic/dish.png'
   },
   {
     id: 's5',
@@ -458,7 +464,7 @@ const MENU_ITEMS = [
     isVeg: false,
     bestseller: false,
     description: 'Crispy crumb-fried chicken strips with dip.',
-    image: 'assets/nonveg/chicken-finger/dish.png'
+    image: 'assets/veg/chicken-finger/dish.png'
   },
   {
     id: 's6',
@@ -468,7 +474,7 @@ const MENU_ITEMS = [
     isVeg: false,
     bestseller: true,
     description: 'Crispy fried chicken lollipops served with hot garlic sauce.',
-    image: 'assets/nonveg/chicken-lollipop/dish.png'
+    image: 'assets/veg/chicken-lollipop/dish.png'
   },
   {
     id: 's7',
@@ -478,7 +484,7 @@ const MENU_ITEMS = [
     isVeg: false,
     bestseller: true,
     description: 'Charcoal roasted chicken marinated in yogurt and tandoori spices.',
-    image: 'assets/nonveg/tandoori-chicken/dish.png'
+    image: 'assets/veg/tandoori-chicken/dish.png'
   },
 
   // --- Drinks & Desserts ---
@@ -530,16 +536,6 @@ const MENU_ITEMS = [
     isVeg: false,
     bestseller: false,
     description: 'Spicy chicken soup served with crunchy fried noodles.',
-    image: 'assets/nonveg/chicken-manchow-soup/dish.png'
+    image: 'assets/veg/chicken-manchow-soup/dish.png'
   }
 ];
-
-// Restaurant Contact Information
-const RESTAURANT_INFO = {
-  name: "aashirwad",
-  displayName: "Aashirwad",
-  phone: "7004230188",
-  whatsappNumber: "917004230188",
-  city: "Hazaribagh",
-  deliveryNote: "Free Home Delivery in Hazaribagh"
-};

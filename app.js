@@ -1,7 +1,10 @@
 /**
- * aashirwad - Home Delivery Fast Ordering Application
- * Directly searchable, automatic expected price totaling,
- * and instant SMS / WhatsApp order dispatch to 7004230188 with delivery address.
+ * aashirwad - Professional Restaurant Home Delivery Web Application
+ * Features:
+ * - Cookie-persisted delivery location
+ * - Multi-line phone calling options (all verified restaurant numbers)
+ * - Searchable menu with live expected price totaling
+ * - WhatsApp & SMS order dispatch to 7004230188
  */
 
 // Application State
@@ -10,7 +13,7 @@ const state = {
   dietFilter: 'all', // 'all', 'veg', 'nonveg'
   searchQuery: '',
   cart: {}, // { [itemId]: quantity }
-  deliveryInfo: {
+  delivery: {
     address: '',
     name: '',
     phone: '',
@@ -19,27 +22,79 @@ const state = {
   isDrawerOpen: false
 };
 
-// Initialize App
+// Cookie Helpers
+function setCookie(name, value, days = 60) {
+  const d = new Date();
+  d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
+  const expires = "expires=" + d.toUTCString();
+  document.cookie = `${name}=${encodeURIComponent(value)};${expires};path=/;SameSite=Lax`;
+}
+
+function getCookie(name) {
+  const cname = `${name}=`;
+  const decoded = decodeURIComponent(document.cookie);
+  const ca = decoded.split(';');
+  for (let i = 0; i < ca.length; i++) {
+    let c = ca[i].trim();
+    if (c.indexOf(cname) === 0) {
+      return c.substring(cname.length, c.length);
+    }
+  }
+  return '';
+}
+
+// Initialize on Load
 document.addEventListener('DOMContentLoaded', () => {
-  loadSavedState();
+  loadSavedData();
   renderCategories();
   renderMenu();
   setupEventListeners();
   updateCartUI();
-  syncDeliveryInputs();
+  updateLocationHeader();
+
+  // If no delivery address set in cookies, prompt gently after slight delay
+  if (!state.delivery.address) {
+    setTimeout(() => {
+      openLocationModal(false);
+    }, 600);
+  }
 });
 
-// Load cart and delivery info from LocalStorage
-function loadSavedState() {
+// Load Cookies & LocalStorage
+function loadSavedData() {
+  // Load Delivery from Cookies (with localStorage fallback)
+  state.delivery.address = getCookie('aashirwad_addr') || localStorage.getItem('aashirwad_addr') || '';
+  state.delivery.name = getCookie('aashirwad_name') || localStorage.getItem('aashirwad_name') || '';
+  state.delivery.phone = getCookie('aashirwad_phone') || localStorage.getItem('aashirwad_phone') || '';
+  state.delivery.notes = localStorage.getItem('aashirwad_notes') || '';
+
+  // Load Cart
   try {
     const savedCart = localStorage.getItem('aashirwad_cart');
     if (savedCart) state.cart = JSON.parse(savedCart);
-
-    const savedDelivery = localStorage.getItem('aashirwad_delivery');
-    if (savedDelivery) state.deliveryInfo = JSON.parse(savedDelivery);
   } catch (e) {
-    console.error('Failed to load state', e);
+    state.cart = {};
   }
+}
+
+function saveDeliveryData(address, name, phone, notes = '') {
+  state.delivery.address = address.trim();
+  state.delivery.name = name.trim();
+  state.delivery.phone = phone.trim();
+  state.delivery.notes = notes.trim();
+
+  // Save to Cookies
+  setCookie('aashirwad_addr', state.delivery.address);
+  setCookie('aashirwad_name', state.delivery.name);
+  setCookie('aashirwad_phone', state.delivery.phone);
+
+  // Backup to localStorage
+  localStorage.setItem('aashirwad_addr', state.delivery.address);
+  localStorage.setItem('aashirwad_name', state.delivery.name);
+  localStorage.setItem('aashirwad_phone', state.delivery.phone);
+  localStorage.setItem('aashirwad_notes', state.delivery.notes);
+
+  updateLocationHeader();
 }
 
 function saveCartToStorage() {
@@ -50,35 +105,82 @@ function saveCartToStorage() {
   }
 }
 
-function saveDeliveryToStorage() {
-  try {
-    localStorage.setItem('aashirwad_delivery', JSON.stringify(state.deliveryInfo));
-  } catch (e) {
-    console.error('Failed to save delivery info', e);
+// Update Top Bar Location Display
+function updateLocationHeader() {
+  const label = document.getElementById('header-location-label');
+  if (!label) return;
+
+  if (state.delivery.address) {
+    label.innerHTML = `
+      <span class="truncate max-w-[160px] sm:max-w-[280px] inline-block font-semibold text-stone-800">${state.delivery.address}</span>
+      <span class="text-orange-600 font-bold ml-1 text-[11px] underline">Change</span>
+    `;
+  } else {
+    label.innerHTML = `
+      <span class="text-orange-700 font-bold">Select Delivery Location ▾</span>
+    `;
   }
 }
 
-// Sync Delivery Inputs with state
-function syncDeliveryInputs() {
-  const addressInput = document.getElementById('delivery-address');
-  const nameInput = document.getElementById('delivery-name');
-  const phoneInput = document.getElementById('delivery-phone');
-  const notesInput = document.getElementById('delivery-notes');
+// Location Modal Controls
+function openLocationModal(canClose = true) {
+  const modal = document.getElementById('location-modal');
+  const closeBtn = document.getElementById('close-location-modal-btn');
+  const addrInput = document.getElementById('modal-address');
+  const nameInput = document.getElementById('modal-name');
+  const phoneInput = document.getElementById('modal-phone');
 
-  if (addressInput && state.deliveryInfo.address) addressInput.value = state.deliveryInfo.address;
-  if (nameInput && state.deliveryInfo.name) nameInput.value = state.deliveryInfo.name;
-  if (phoneInput && state.deliveryInfo.phone) phoneInput.value = state.deliveryInfo.phone;
-  if (notesInput && state.deliveryInfo.notes) notesInput.value = state.deliveryInfo.notes;
+  if (modal) {
+    if (addrInput) addrInput.value = state.delivery.address;
+    if (nameInput) nameInput.value = state.delivery.name;
+    if (phoneInput) phoneInput.value = state.delivery.phone;
+
+    if (closeBtn) {
+      if (canClose || state.delivery.address) {
+        closeBtn.classList.remove('hidden');
+      } else {
+        closeBtn.classList.add('hidden');
+      }
+    }
+
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
 }
 
-// Render Category Navigation Tabs
+function closeLocationModal() {
+  const modal = document.getElementById('location-modal');
+  if (modal) {
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+}
+
+// Call Options Modal Controls
+function openCallModal() {
+  const modal = document.getElementById('call-modal');
+  if (modal) {
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function closeCallModal() {
+  const modal = document.getElementById('call-modal');
+  if (modal) {
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+}
+
+// Render Category Tabs
 function renderCategories() {
   const container = document.getElementById('category-tabs');
   if (!container) return;
 
   container.innerHTML = MENU_CATEGORIES.map(cat => `
     <button
-      class="category-tab px-3.5 py-1.5 rounded-full font-semibold text-xs border flex-shrink-0 transition-all ${state.activeCategory === cat.id ? 'bg-orange-600 text-white border-orange-600 shadow-sm' : 'bg-white text-stone-700 border-stone-200 hover:border-orange-300 hover:bg-orange-50'}"
+      class="category-tab px-3.5 py-1.5 rounded-full font-semibold text-xs border flex-shrink-0 transition-all cursor-pointer ${state.activeCategory === cat.id ? 'bg-orange-600 text-white border-orange-600 shadow-sm' : 'bg-white text-stone-700 border-stone-200 hover:border-orange-300 hover:bg-orange-50'}"
       data-category="${cat.id}">
       <span>${cat.icon}</span>
       <span class="ml-1">${cat.name}</span>
@@ -122,33 +224,30 @@ function renderMenu() {
   const items = getFilteredItems();
 
   if (countLabel) {
-    countLabel.textContent = `${items.length} ${items.length === 1 ? 'dish' : 'dishes'} found`;
+    countLabel.textContent = `${items.length} ${items.length === 1 ? 'dish' : 'dishes'}`;
   }
 
   if (items.length === 0) {
     grid.innerHTML = `
       <div class="col-span-full py-12 text-center bg-white rounded-2xl border border-stone-200 p-8">
-        <div class="text-4xl mb-2">🔍</div>
-        <h3 class="text-base font-bold text-stone-800">No matching dishes</h3>
+        <div class="text-3xl mb-2">🔍</div>
+        <h3 class="text-sm font-bold text-stone-800">No matching dishes</h3>
         <p class="text-xs text-stone-500 mt-1">Try another search term or click All Dishes.</p>
-        <button id="reset-search-btn" class="mt-3 px-4 py-1.5 bg-orange-600 text-white rounded-lg text-xs font-bold hover:bg-orange-700 transition">
+        <button id="reset-search-btn" class="mt-3 px-4 py-1.5 bg-orange-600 text-white rounded-lg text-xs font-bold hover:bg-orange-700 transition cursor-pointer">
           Show All Dishes
         </button>
       </div>
     `;
-    const resetBtn = document.getElementById('reset-search-btn');
-    if (resetBtn) {
-      resetBtn.addEventListener('click', () => {
-        state.activeCategory = 'all';
-        state.dietFilter = 'all';
-        state.searchQuery = '';
-        const searchInput = document.getElementById('search-input');
-        if (searchInput) searchInput.value = '';
-        renderCategories();
-        updateDietFilterUI();
-        renderMenu();
-      });
-    }
+    document.getElementById('reset-search-btn')?.addEventListener('click', () => {
+      state.activeCategory = 'all';
+      state.dietFilter = 'all';
+      state.searchQuery = '';
+      const searchInput = document.getElementById('search-input');
+      if (searchInput) searchInput.value = '';
+      renderCategories();
+      updateDietFilterUI();
+      renderMenu();
+    });
     return;
   }
 
@@ -158,7 +257,7 @@ function renderMenu() {
     return `
       <div class="menu-card bg-white rounded-2xl border border-stone-200 overflow-hidden flex flex-col justify-between shadow-sm hover:shadow-md transition">
         <div>
-          <!-- Dish Image -->
+          <!-- Matching Dish Image -->
           <div class="relative w-full aspect-[4/3] bg-stone-100 overflow-hidden">
             <img 
               src="${item.image}" 
@@ -182,11 +281,9 @@ function renderMenu() {
 
           <!-- Dish Info -->
           <div class="p-3.5">
-            <div class="flex items-start justify-between gap-2">
+            <div class="flex items-start justify-between gap-1.5">
               <h3 class="font-bold text-stone-900 text-sm leading-snug">${item.name}</h3>
-              <div class="text-right flex-shrink-0">
-                <span class="text-base font-extrabold text-stone-900">₹${item.price}</span>
-              </div>
+              <span class="text-sm sm:text-base font-extrabold text-stone-900 flex-shrink-0">₹${item.price}</span>
             </div>
             <p class="text-stone-500 text-xs mt-1 line-clamp-2">${item.description}</p>
           </div>
@@ -196,7 +293,7 @@ function renderMenu() {
         <div class="p-3.5 pt-0">
           ${qty === 0 ? `
             <button 
-              class="w-full py-2 px-3 rounded-xl bg-orange-50 hover:bg-orange-600 text-orange-700 hover:text-white font-bold text-xs border border-orange-200 hover:border-transparent transition flex items-center justify-center gap-1.5 add-to-order-btn cursor-pointer"
+              class="w-full py-2 px-3 rounded-xl bg-orange-50 hover:bg-orange-600 text-orange-700 hover:text-white font-bold text-xs border border-orange-200 hover:border-transparent transition flex items-center justify-center gap-1 add-to-order-btn cursor-pointer"
               data-item-id="${item.id}">
               <span>Add</span>
               <span>· ₹${item.price}</span>
@@ -205,14 +302,14 @@ function renderMenu() {
             <div>
               <div class="flex items-center justify-between bg-orange-600 text-white rounded-xl p-1 shadow-sm">
                 <button 
-                  class="qty-btn bg-white/20 hover:bg-white/30 text-white decrease-qty-btn" 
+                  class="qty-btn bg-white/20 hover:bg-white/30 text-white decrease-qty-btn cursor-pointer" 
                   data-item-id="${item.id}"
                   aria-label="Decrease quantity">
                   -
                 </button>
-                <span class="font-bold text-xs px-2 select-none">${qty} in order</span>
+                <span class="font-bold text-xs px-2 select-none">${qty} in cart</span>
                 <button 
-                  class="qty-btn bg-white/20 hover:bg-white/30 text-white increase-qty-btn" 
+                  class="qty-btn bg-white/20 hover:bg-white/30 text-white increase-qty-btn cursor-pointer" 
                   data-item-id="${item.id}"
                   aria-label="Increase quantity">
                   +
@@ -229,7 +326,6 @@ function renderMenu() {
     `;
   }).join('');
 
-  // Button Listeners
   grid.querySelectorAll('.add-to-order-btn').forEach(btn => {
     btn.addEventListener('click', () => addToCart(btn.dataset.itemId));
   });
@@ -276,7 +372,7 @@ function clearCart() {
     saveCartToStorage();
     updateCartUI();
     renderMenu();
-    showToast("Order cleared");
+    showToast("Cart cleared");
   }
 }
 
@@ -304,17 +400,15 @@ function getCartTotals() {
   return { count, totalAmount, items };
 }
 
-// Update Cart Badge & Drawer UI
+// Update UI
 function updateCartUI() {
   const { count, totalAmount, items } = getCartTotals();
 
-  // Header Cart Counter & Amount
   const navBadge = document.getElementById('nav-cart-count');
   const navAmount = document.getElementById('nav-cart-total');
   if (navBadge) navBadge.textContent = count;
   if (navAmount) navAmount.textContent = `₹${totalAmount}`;
 
-  // Floating Cart Button
   const floatBtn = document.getElementById('floating-cart-btn');
   const floatCount = document.getElementById('floating-cart-count');
   const floatAmount = document.getElementById('floating-cart-amount');
@@ -337,23 +431,28 @@ function renderCartDrawer(items, count, totalAmount) {
   const drawerSummary = document.getElementById('cart-drawer-summary');
   const drawerEmpty = document.getElementById('cart-drawer-empty');
   const drawerCount = document.getElementById('cart-drawer-count');
-  const deliveryNotesBox = document.getElementById('delivery-notes-box');
+  const notesBox = document.getElementById('delivery-notes-box');
+  const drawerAddrDisplay = document.getElementById('drawer-delivery-addr');
 
   if (drawerCount) {
-    drawerCount.textContent = `${count} ${count === 1 ? 'item' : 'items'} • Total Expected: ₹${totalAmount}`;
+    drawerCount.textContent = `${count} ${count === 1 ? 'item' : 'items'} • Expected Total: ₹${totalAmount}`;
+  }
+
+  if (drawerAddrDisplay) {
+    drawerAddrDisplay.textContent = state.delivery.address || 'Address not set (tap Change)';
   }
 
   if (count === 0) {
     if (drawerItems) drawerItems.innerHTML = '';
     if (drawerSummary) drawerSummary.classList.add('hidden');
-    if (deliveryNotesBox) deliveryNotesBox.classList.add('hidden');
+    if (notesBox) notesBox.classList.add('hidden');
     if (drawerEmpty) drawerEmpty.classList.remove('hidden');
     return;
   }
 
   if (drawerEmpty) drawerEmpty.classList.add('hidden');
   if (drawerSummary) drawerSummary.classList.remove('hidden');
-  if (deliveryNotesBox) deliveryNotesBox.classList.remove('hidden');
+  if (notesBox) notesBox.classList.remove('hidden');
 
   if (drawerItems) {
     drawerItems.innerHTML = items.map(item => `
@@ -397,7 +496,7 @@ function renderCartDrawer(items, count, totalAmount) {
   if (drawerGrandTotal) drawerGrandTotal.textContent = `₹${totalAmount}`;
 }
 
-// Open & Close Drawer
+// Drawer Visibility
 function openCartDrawer() {
   const drawer = document.getElementById('cart-drawer');
   const overlay = document.getElementById('cart-drawer-overlay');
@@ -428,67 +527,51 @@ function closeCartDrawer() {
   }
 }
 
-// Collect Current Delivery Address Inputs
-function getDeliveryInfo() {
-  const addr = document.getElementById('delivery-address')?.value.trim() || '';
-  const name = document.getElementById('delivery-name')?.value.trim() || '';
-  const phone = document.getElementById('delivery-phone')?.value.trim() || '';
-  const notes = document.getElementById('delivery-notes')?.value.trim() || '';
-
-  state.deliveryInfo = { address: addr, name: name, phone: phone, notes: notes };
-  saveDeliveryToStorage();
-
-  return state.deliveryInfo;
-}
-
-// Generate Detailed Order Text with Menu Items, Expected Price, and Delivery Address
-function generateOrderMessage() {
+// WhatsApp Order Compilation (Primary Channel)
+function generateWhatsAppMessage() {
   const { items, totalAmount, count } = getCartTotals();
   if (count === 0) return null;
 
-  const info = getDeliveryInfo();
-  const address = info.address || 'Hazaribagh (Please call for exact address)';
-  const name = info.name || 'Valued Customer';
-  const phone = info.phone || 'Not Provided';
+  const notes = document.getElementById('delivery-notes')?.value.trim() || state.delivery.notes;
+  const address = state.delivery.address || 'Hazaribagh';
+  const name = state.delivery.name || 'Valued Customer';
+  const phone = state.delivery.phone || '';
 
   let msg = `🛵 *AASHIRWAD - HOME DELIVERY ORDER*\n`;
   msg += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
   msg += `📍 *Delivery Address:* ${address}\n`;
   msg += `👤 *Customer Name:* ${name}\n`;
-  msg += `📞 *Customer Phone:* ${phone}\n`;
-  if (info.notes) {
-    msg += `📝 *Instructions:* ${info.notes}\n`;
-  }
+  if (phone) msg += `📞 *Customer Phone:* ${phone}\n`;
+  if (notes) msg += `📝 *Instructions:* ${notes}\n`;
   msg += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
-  msg += `🛒 *SELECTED DISHES & EXPECTED PRICE:*\n`;
+  msg += `🛒 *ORDERED DISHES & EXPECTED PRICE:*\n`;
 
   items.forEach((item, index) => {
     msg += `${index + 1}. *${item.name}*\n`;
     msg += `   • Qty: ${item.quantity}  |  Price: ₹${item.unitPrice} each\n`;
-    msg += `   • Expected Subtotal: ₹${item.lineTotal}\n`;
+    msg += `   • Subtotal: ₹${item.lineTotal}\n`;
   });
 
   msg += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
   msg += `💵 *TOTAL EXPECTED PRICE: ₹${totalAmount}*\n`;
   msg += `🚀 *Delivery:* Free Home Delivery\n`;
-  msg += `⏰ *Time:* ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}\n`;
-  msg += `\nPlease confirm and dispatch our home delivery. Thank you!`;
+  msg += `\nPlease confirm availability and dispatch. Thank you!`;
 
   return msg;
 }
 
-// Generate SMS Message to 7004230188
+// SMS Order Compilation
 function generateSMSMessage() {
   const { items, totalAmount, count } = getCartTotals();
   if (count === 0) return null;
 
-  const info = getDeliveryInfo();
-  const address = info.address || 'Hazaribagh';
-  const name = info.name || 'Customer';
+  const notes = document.getElementById('delivery-notes')?.value.trim() || state.delivery.notes;
+  const address = state.delivery.address || 'Hazaribagh';
+  const name = state.delivery.name || 'Customer';
 
   let sms = `AASHIRWAD HOME DELIVERY ORDER\n`;
   sms += `Address: ${address}\n`;
-  sms += `Name: ${name} (${info.phone || ''})\n\n`;
+  sms += `Name: ${name} (${state.delivery.phone || ''})\n\n`;
   sms += `ITEMS & EXPECTED PRICE:\n`;
 
   items.forEach((item, idx) => {
@@ -496,33 +579,47 @@ function generateSMSMessage() {
   });
 
   sms += `\nTOTAL EXPECTED PRICE: Rs.${totalAmount}\n`;
-  sms += `(Free Home Delivery)\n`;
-  if (info.notes) sms += `Note: ${info.notes}\n`;
+  if (notes) sms += `Note: ${notes}\n`;
   sms += `Please confirm & dispatch.`;
 
   return sms;
 }
 
-// Dispatch SMS to 7004230188
-function sendViaSMS() {
-  const { count, totalAmount } = getCartTotals();
+// Send via WhatsApp to 7004230188
+function sendViaWhatsApp() {
+  const { count } = getCartTotals();
   if (count === 0) {
-    alert("Please add dishes to your order first!");
+    alert("Please select dishes first!");
     return;
   }
 
-  const info = getDeliveryInfo();
-  if (!info.address) {
-    const entered = prompt("Please enter your Home Delivery Address in Hazaribagh:");
-    if (entered) {
-      document.getElementById('delivery-address').value = entered;
-      info.address = entered;
-      saveDeliveryToStorage();
-    }
+  if (!state.delivery.address) {
+    openLocationModal(false);
+    return;
+  }
+
+  const message = generateWhatsAppMessage();
+  const phone = "917004230188"; // +91 7004230188
+  const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+  window.open(url, '_blank');
+  showToast("Opening WhatsApp with your order & delivery address...");
+}
+
+// Send via SMS to 7004230188
+function sendViaSMS() {
+  const { count, totalAmount } = getCartTotals();
+  if (count === 0) {
+    alert("Please select dishes first!");
+    return;
+  }
+
+  if (!state.delivery.address) {
+    openLocationModal(false);
+    return;
   }
 
   const smsText = generateSMSMessage();
-  const phone = RESTAURANT_INFO.phone; // 7004230188
+  const phone = "7004230188";
 
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
   const separator = isIOS ? '&' : '?';
@@ -530,37 +627,11 @@ function sendViaSMS() {
 
   copyOrderToClipboard(false);
   window.location.href = smsUrl;
-  showToast(`Opening SMS to 7004230188 (Expected Total: ₹${totalAmount})...`);
+  showToast(`Opening SMS to 7004230188 (Total Expected: ₹${totalAmount})...`);
 }
 
-// Dispatch WhatsApp
-function sendViaWhatsApp() {
-  const { count } = getCartTotals();
-  if (count === 0) {
-    alert("Please add dishes to your order first!");
-    return;
-  }
-
-  const info = getDeliveryInfo();
-  if (!info.address) {
-    const entered = prompt("Please enter your Home Delivery Address in Hazaribagh:");
-    if (entered) {
-      document.getElementById('delivery-address').value = entered;
-      info.address = entered;
-      saveDeliveryToStorage();
-    }
-  }
-
-  const message = generateOrderMessage();
-  const phone = RESTAURANT_INFO.whatsappNumber; // 917004230188
-  const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-  window.open(url, '_blank');
-  showToast("Opening WhatsApp with your order & delivery address...");
-}
-
-// Copy to clipboard
 function copyOrderToClipboard(showUserToast = true) {
-  const message = generateOrderMessage();
+  const message = generateWhatsAppMessage();
   if (!message) return;
 
   if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -587,16 +658,13 @@ function showToast(msg) {
   }, 2200);
 }
 
-// Setup Event Listeners
+// Event Listeners
 function setupEventListeners() {
   // Live Instant Search
-  const searchInput = document.getElementById('search-input');
-  if (searchInput) {
-    searchInput.addEventListener('input', (e) => {
-      state.searchQuery = e.target.value;
-      renderMenu();
-    });
-  }
+  document.getElementById('search-input')?.addEventListener('input', (e) => {
+    state.searchQuery = e.target.value;
+    renderMenu();
+  });
 
   // Dietary Toggle Buttons
   document.querySelectorAll('.diet-filter-btn').forEach(btn => {
@@ -607,13 +675,35 @@ function setupEventListeners() {
     });
   });
 
-  // Delivery Address Input Syncing
-  ['delivery-address', 'delivery-name', 'delivery-phone', 'delivery-notes'].forEach(id => {
-    const input = document.getElementById(id);
-    if (input) {
-      input.addEventListener('input', () => getDeliveryInfo());
-    }
+  // Location Modal Triggers
+  document.getElementById('header-location-btn')?.addEventListener('click', () => openLocationModal(true));
+  document.getElementById('drawer-change-addr-btn')?.addEventListener('click', () => {
+    closeCartDrawer();
+    openLocationModal(true);
   });
+  document.getElementById('close-location-modal-btn')?.addEventListener('click', closeLocationModal);
+
+  // Location Form Save
+  document.getElementById('save-location-form')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const addr = document.getElementById('modal-address').value;
+    const name = document.getElementById('modal-name').value;
+    const phone = document.getElementById('modal-phone').value;
+
+    if (!addr.trim()) {
+      alert("Please enter your delivery address!");
+      return;
+    }
+
+    saveDeliveryData(addr, name, phone);
+    closeLocationModal();
+    showToast("Delivery address saved in cookies!");
+  });
+
+  // Call Options Modal Triggers
+  document.getElementById('header-call-btn')?.addEventListener('click', openCallModal);
+  document.getElementById('drawer-call-btn')?.addEventListener('click', openCallModal);
+  document.getElementById('close-call-modal-btn')?.addEventListener('click', closeCallModal);
 
   // Drawer Triggers
   document.getElementById('nav-cart-btn')?.addEventListener('click', openCartDrawer);
@@ -623,13 +713,17 @@ function setupEventListeners() {
   document.getElementById('clear-cart-btn')?.addEventListener('click', clearCart);
 
   // Dispatch Triggers
-  document.getElementById('order-sms-btn')?.addEventListener('click', sendViaSMS);
   document.getElementById('order-whatsapp-btn')?.addEventListener('click', sendViaWhatsApp);
+  document.getElementById('order-sms-btn')?.addEventListener('click', sendViaSMS);
   document.getElementById('copy-order-btn')?.addEventListener('click', () => copyOrderToClipboard(true));
 
   // Escape Key
   window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && state.isDrawerOpen) closeCartDrawer();
+    if (e.key === 'Escape') {
+      closeLocationModal();
+      closeCallModal();
+      if (state.isDrawerOpen) closeCartDrawer();
+    }
   });
 }
 

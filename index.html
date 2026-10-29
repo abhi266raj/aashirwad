@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aashirwad - Home Delivery Order (SMS: 7004230188)</title>
+  <title>aashirwad - Home Delivery</title>
   
-  <meta name="description" content="Order home delivery from aashirwad in Hazaribagh. Search dishes, calculate expected price total, and send your order directly via SMS or WhatsApp to 7004230188." />
+  <meta name="description" content="Order home delivery from aashirwad in Hazaribagh. WhatsApp & SMS: 7004230188." />
 
   <!-- Google Fonts: Outfit & Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -36,30 +36,44 @@
   <!-- Custom Stylesheet -->
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body class="bg-[#fcfaf7] text-stone-900 min-h-screen flex flex-col antialiased selection:bg-orange-500 selection:text-white">
+<body class="bg-[#f8f9fa] text-stone-900 min-h-screen flex flex-col antialiased selection:bg-orange-500 selection:text-white">
 
-  <!-- Compact Top Bar -->
-  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-stone-200 shadow-sm">
+  <!-- Main Navigation Header -->
+  <header class="sticky top-0 z-40 bg-white border-b border-stone-200 shadow-sm">
     <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-3">
       
-      <!-- Brand Name -->
-      <a href="#" class="flex items-center gap-2.5">
-        <div class="w-9 h-9 rounded-xl bg-orange-600 text-white flex items-center justify-center font-extrabold text-lg shadow-sm">
-          आ
-        </div>
-        <div>
+      <!-- Brand & Location Pill -->
+      <div class="flex items-center gap-3 min-w-0">
+        <a href="#" class="flex items-center gap-2 flex-shrink-0">
+          <div class="w-9 h-9 rounded-xl bg-orange-600 text-white flex items-center justify-center font-extrabold text-lg shadow-sm">
+            आ
+          </div>
           <span class="font-extrabold text-xl sm:text-2xl tracking-tight text-stone-900 font-heading lowercase">aashirwad</span>
-          <span class="text-[10px] font-bold text-orange-700 bg-orange-100 px-1.5 py-0.5 rounded ml-1.5 uppercase">Home Delivery</span>
-        </div>
-      </a>
-
-      <!-- Quick Delivery Phone & Cart Trigger -->
-      <div class="flex items-center gap-2 sm:gap-3">
-        <a href="tel:7004230188" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-stone-700 bg-stone-100 hover:bg-orange-50 border border-stone-200 transition">
-          <span>📞 7004230188</span>
         </a>
 
-        <!-- Cart Button -->
+        <!-- Location Cookie Pill -->
+        <button 
+          id="header-location-btn" 
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-stone-100 hover:bg-orange-50 border border-stone-200 text-xs transition min-w-0 cursor-pointer"
+          title="Click to change your delivery location">
+          <span class="text-orange-600">📍</span>
+          <span id="header-location-label" class="text-xs truncate font-medium text-stone-700">Delivering to: Hazaribagh ▾</span>
+        </button>
+      </div>
+
+      <!-- Action Buttons: Call & Cart -->
+      <div class="flex items-center gap-2 flex-shrink-0">
+        
+        <!-- Multi-Line Calling Options Button -->
+        <button 
+          id="header-call-btn" 
+          class="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-stone-800 bg-stone-100 hover:bg-orange-50 border border-stone-200 transition cursor-pointer"
+          aria-label="Call Restaurant Numbers">
+          <svg class="w-3.5 h-3.5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+          <span>Call Us</span>
+        </button>
+
+        <!-- Cart Trigger -->
         <button 
           id="nav-cart-btn"
           class="flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-3.5 rounded-xl shadow-sm transition cursor-pointer"
@@ -69,71 +83,21 @@
           <span id="nav-cart-count" class="bg-white text-orange-700 text-xs font-black px-1.5 py-0.5 rounded-full">0</span>
           <span id="nav-cart-total" class="hidden sm:inline text-xs font-bold border-l border-white/20 pl-2">₹0</span>
         </button>
+
       </div>
 
     </div>
   </header>
 
-  <!-- Main Delivery Order Area (Starts Directly) -->
-  <main class="max-w-6xl mx-auto px-4 py-4 sm:py-6 flex-1 w-full space-y-4">
+  <!-- Main Ordering Container (Starts Directly with Searchable Menu) -->
+  <main class="max-w-6xl mx-auto px-4 py-4 sm:py-5 flex-1 w-full space-y-3.5">
 
-    <!-- 1. Prominent Home Delivery Address Prompt -->
-    <section class="bg-white rounded-2xl p-4 sm:p-5 border border-orange-200/90 shadow-sm space-y-3">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <span class="text-xl">🛵</span>
-          <div>
-            <h2 class="text-sm sm:text-base font-extrabold text-stone-900 font-heading">Where should we deliver your food?</h2>
-            <p class="text-[11px] text-stone-500">Free Home Delivery in Hazaribagh • Order dispatched directly via SMS to 7004230188</p>
-          </div>
-        </div>
-        <span class="hidden sm:inline text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
-          ✓ Free Delivery
-        </span>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-12 gap-2.5 pt-1">
-        <!-- Delivery Address Input -->
-        <div class="md:col-span-6">
-          <label for="delivery-address" class="block text-[11px] font-bold text-stone-700 mb-1">Delivery Address & Landmark *</label>
-          <input 
-            type="text" 
-            id="delivery-address" 
-            placeholder="e.g. Near Bansilal Chowk / Main Road, Hazaribagh" 
-            class="w-full text-xs sm:text-sm px-3 py-2 rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-orange-500 bg-stone-50/50"
-          />
-        </div>
-
-        <!-- Customer Name Input -->
-        <div class="md:col-span-3">
-          <label for="delivery-name" class="block text-[11px] font-bold text-stone-700 mb-1">Your Name</label>
-          <input 
-            type="text" 
-            id="delivery-name" 
-            placeholder="e.g. Rahul Kumar" 
-            class="w-full text-xs sm:text-sm px-3 py-2 rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-orange-500 bg-stone-50/50"
-          />
-        </div>
-
-        <!-- Phone Number Input -->
-        <div class="md:col-span-3">
-          <label for="delivery-phone" class="block text-[11px] font-bold text-stone-700 mb-1">Contact Phone Number</label>
-          <input 
-            type="tel" 
-            id="delivery-phone" 
-            placeholder="e.g. 9876543210" 
-            class="w-full text-xs sm:text-sm px-3 py-2 rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-orange-500 bg-stone-50/50"
-          />
-        </div>
-      </div>
-    </section>
-
-    <!-- 2. Instant Search & Category Filters -->
-    <section class="bg-white rounded-2xl p-3.5 sm:p-4 border border-stone-200 shadow-sm space-y-3">
+    <!-- Search & Filter Controls -->
+    <div class="bg-white rounded-2xl p-3.5 border border-stone-200/90 shadow-sm space-y-3">
       
       <div class="flex flex-col sm:flex-row gap-3 items-center justify-between">
         
-        <!-- Searchable input -->
+        <!-- Instant Search Box -->
         <div class="relative w-full sm:max-w-md">
           <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-stone-400">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
@@ -141,15 +105,15 @@
           <input 
             type="text" 
             id="search-input"
-            placeholder="Search any dish (e.g. Roti, Paneer Butter, Biryani, Momos, Chowmein)..." 
-            class="w-full pl-9 pr-3 py-2 text-xs sm:text-sm rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-orange-500 bg-stone-50"
+            placeholder="Search dishes (e.g. Makhan Roti, Butter Chicken, Momos, Biryani)..." 
+            class="w-full pl-9 pr-3 py-2 text-xs sm:text-sm rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-orange-500 bg-stone-50/70"
           />
         </div>
 
-        <!-- Veg / Non-Veg Dietary Filter Buttons -->
-        <div class="flex items-center gap-1.5 w-full sm:w-auto justify-start">
+        <!-- Veg / Non-Veg Quick Toggles -->
+        <div class="flex items-center gap-1.5 w-full sm:w-auto">
           <button class="diet-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold border transition bg-stone-900 text-white border-stone-900 cursor-pointer" data-diet="all">
-            All
+            All Dishes
           </button>
           <button class="diet-filter-btn px-2.5 py-1.5 rounded-lg text-xs font-bold border border-stone-200 text-stone-700 bg-white hover:bg-stone-50 transition flex items-center gap-1 cursor-pointer" data-diet="veg">
             <span class="food-badge veg"></span>
@@ -165,23 +129,23 @@
 
       <!-- Category Filter Pills -->
       <div class="pt-2 border-t border-stone-100">
-        <div id="category-tabs" class="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+        <div id="category-tabs" class="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
           <!-- Injected via app.js -->
         </div>
       </div>
 
-    </section>
-
-    <!-- 3. Dishes Count & Live Search Result -->
-    <div class="flex items-center justify-between px-1 text-xs text-stone-500 font-semibold">
-      <span id="menu-count-label">Loading dishes...</span>
-      <span>Tap dish to add • SMS to 7004230188</span>
     </div>
 
-    <!-- 4. Searchable Menu Grid -->
-    <section id="menu-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 pb-20">
-      <!-- Injected via app.js with matching dish.png -->
-    </section>
+    <!-- Active Count Indicator -->
+    <div class="flex items-center justify-between px-1 text-xs text-stone-500 font-semibold">
+      <span id="menu-count-label">Loading dishes...</span>
+      <span class="text-orange-700 font-bold">Free Home Delivery in Hazaribagh</span>
+    </div>
+
+    <!-- Searchable Menu Grid -->
+    <div id="menu-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 pb-20">
+      <!-- Injected via app.js with assets/veg/<dishname>/dish.png -->
+    </div>
 
   </main>
 
@@ -199,6 +163,135 @@
     <span id="floating-cart-amount" class="text-white font-extrabold">₹0</span>
   </button>
 
+  <!-- Delivery Location Modal (Stored in Cookies) -->
+  <div id="location-modal" class="fixed inset-0 z-50 bg-stone-950/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl w-full max-w-md p-5 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">🛵</span>
+          <h3 class="font-extrabold text-stone-900 text-base font-heading">Home Delivery Address</h3>
+        </div>
+        <button id="close-location-modal-btn" class="p-1 text-stone-400 hover:text-stone-700 cursor-pointer" aria-label="Close">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <form id="save-location-form" class="space-y-3">
+        <div>
+          <label for="modal-address" class="block text-xs font-bold text-stone-700 mb-1">Street Address / Colony / Landmark in Hazaribagh *</label>
+          <input 
+            type="text" 
+            id="modal-address" 
+            required 
+            placeholder="e.g. Near Bansilal Chowk / Kani Bazar, Main Road" 
+            class="w-full text-xs sm:text-sm px-3 py-2 rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-orange-500 bg-stone-50"
+          />
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label for="modal-name" class="block text-xs font-bold text-stone-700 mb-1">Your Name</label>
+            <input 
+              type="text" 
+              id="modal-name" 
+              placeholder="e.g. Rahul Kumar" 
+              class="w-full text-xs sm:text-sm px-3 py-2 rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-orange-500 bg-stone-50"
+            />
+          </div>
+          <div>
+            <label for="modal-phone" class="block text-xs font-bold text-stone-700 mb-1">Mobile Number</label>
+            <input 
+              type="tel" 
+              id="modal-phone" 
+              placeholder="e.g. 9876543210" 
+              class="w-full text-xs sm:text-sm px-3 py-2 rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-orange-500 bg-stone-50"
+            />
+          </div>
+        </div>
+
+        <p class="text-[11px] text-stone-400">
+          * Your delivery address is saved in cookies for fast reordering.
+        </p>
+
+        <button 
+          type="submit" 
+          class="w-full py-2.5 px-4 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs sm:text-sm transition cursor-pointer shadow-sm">
+          Save Address & Start Ordering
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Multi-Line Calling Options Modal (All Restaurant Numbers) -->
+  <div id="call-modal" class="fixed inset-0 z-50 bg-stone-950/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl w-full max-w-sm p-5 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">📞</span>
+          <h3 class="font-extrabold text-stone-900 text-base font-heading">Call aashirwad</h3>
+        </div>
+        <button id="close-call-modal-btn" class="p-1 text-stone-400 hover:text-stone-700 cursor-pointer" aria-label="Close">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <p class="text-xs text-stone-500">Tap any number below to connect directly with the restaurant:</p>
+
+      <div class="space-y-2">
+        
+        <!-- Number 1: Primary Hotline & WhatsApp -->
+        <div class="p-3 rounded-xl border border-orange-200 bg-orange-50/60 flex items-center justify-between gap-2">
+          <div>
+            <span class="text-[10px] uppercase font-bold text-orange-700 tracking-wider block">Primary Hotline & WhatsApp</span>
+            <span class="font-extrabold text-sm text-stone-900">+91 70042 30188</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <a href="tel:7004230188" class="p-2 rounded-lg bg-stone-900 hover:bg-stone-800 text-white text-xs font-bold transition flex items-center gap-1" title="Call">
+              📞 Call
+            </a>
+            <a href="https://wa.me/917004230188" target="_blank" rel="noopener noreferrer" class="p-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition flex items-center gap-1" title="WhatsApp">
+              💬
+            </a>
+          </div>
+        </div>
+
+        <!-- Number 2: Counter / Reception -->
+        <div class="p-3 rounded-xl border border-stone-200 bg-stone-50 flex items-center justify-between gap-2">
+          <div>
+            <span class="text-[10px] uppercase font-bold text-stone-500 tracking-wider block">Counter & Reception</span>
+            <span class="font-extrabold text-sm text-stone-900">+91 93340 47955</span>
+          </div>
+          <a href="tel:9334047955" class="p-2 rounded-lg bg-stone-900 hover:bg-stone-800 text-white text-xs font-bold transition">
+            📞 Call
+          </a>
+        </div>
+
+        <!-- Number 3: Kitchen & Delivery Desk -->
+        <div class="p-3 rounded-xl border border-stone-200 bg-stone-50 flex items-center justify-between gap-2">
+          <div>
+            <span class="text-[10px] uppercase font-bold text-stone-500 tracking-wider block">Kitchen & Delivery Desk</span>
+            <span class="font-extrabold text-sm text-stone-900">+91 62072 28264</span>
+          </div>
+          <a href="tel:6207228264" class="p-2 rounded-lg bg-stone-900 hover:bg-stone-800 text-white text-xs font-bold transition">
+            📞 Call
+          </a>
+        </div>
+
+        <!-- Number 4: Alternate Line -->
+        <div class="p-3 rounded-xl border border-stone-200 bg-stone-50 flex items-center justify-between gap-2">
+          <div>
+            <span class="text-[10px] uppercase font-bold text-stone-500 tracking-wider block">Alternate Line</span>
+            <span class="font-extrabold text-sm text-stone-900">+91 99315 79212</span>
+          </div>
+          <a href="tel:9931579212" class="p-2 rounded-lg bg-stone-900 hover:bg-stone-800 text-white text-xs font-bold transition">
+            📞 Call
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
   <!-- Order Drawer Backdrop -->
   <div id="cart-drawer-overlay" class="fixed inset-0 bg-stone-900/60 z-50 backdrop-blur-sm hidden opacity-0 transition-opacity"></div>
 
@@ -213,7 +306,7 @@
     <!-- Drawer Header -->
     <div class="p-4 border-b border-stone-200 flex items-center justify-between bg-stone-50">
       <div>
-        <h3 id="drawer-title" class="font-extrabold text-stone-900 text-base font-heading">Home Delivery Order</h3>
+        <h3 id="drawer-title" class="font-extrabold text-stone-900 text-base font-heading">Your Order</h3>
         <p id="cart-drawer-count" class="text-xs text-stone-500 font-medium">0 dishes selected</p>
       </div>
       <div class="flex items-center gap-2">
@@ -224,14 +317,25 @@
       </div>
     </div>
 
+    <!-- Delivery Address Summary inside Drawer -->
+    <div class="px-4 py-2.5 bg-orange-50/70 border-b border-orange-100 flex items-center justify-between text-xs">
+      <div class="min-w-0 pr-2">
+        <span class="text-[10px] font-bold text-orange-700 uppercase block">Delivering To:</span>
+        <span id="drawer-delivery-addr" class="font-semibold text-stone-800 truncate block">Hazaribagh</span>
+      </div>
+      <button id="drawer-change-addr-btn" class="text-xs font-bold text-orange-700 underline flex-shrink-0 cursor-pointer">
+        Change
+      </button>
+    </div>
+
     <!-- Drawer Body -->
     <div class="flex-1 overflow-y-auto p-4 space-y-4">
       
       <!-- Empty State -->
       <div id="cart-drawer-empty" class="text-center py-16 space-y-2">
         <div class="text-4xl">🛵</div>
-        <h4 class="text-sm font-bold text-stone-800">Your delivery order is empty</h4>
-        <p class="text-xs text-stone-500 max-w-xs mx-auto">Click "Add" on any dish above to calculate your expected price total.</p>
+        <h4 class="text-sm font-bold text-stone-800">Your order is empty</h4>
+        <p class="text-xs text-stone-500 max-w-xs mx-auto">Add your favorite dishes to calculate your total and dispatch your order.</p>
       </div>
 
       <!-- Itemized Dishes List -->
@@ -241,7 +345,7 @@
 
       <!-- Special Notes Input -->
       <div id="delivery-notes-box" class="pt-2 border-t border-stone-100 hidden">
-        <label for="delivery-notes" class="block text-[11px] font-bold text-stone-700 mb-1">Cooking / Delivery Instructions (Optional)</label>
+        <label for="delivery-notes" class="block text-[11px] font-bold text-stone-700 mb-1">Special Cooking Instructions (Optional)</label>
         <input 
           type="text" 
           id="delivery-notes" 
@@ -252,21 +356,17 @@
 
     </div>
 
-    <!-- Drawer Footer: Expected Price Total & SMS Button -->
+    <!-- Drawer Footer: Expected Price Total & Dispatch Buttons -->
     <div id="cart-drawer-summary" class="p-4 border-t border-stone-200 bg-stone-50 space-y-3 hidden">
       
       <div class="space-y-1 text-xs">
         <div class="flex justify-between text-stone-600">
-          <span>Expected Subtotal:</span>
+          <span>Subtotal:</span>
           <span id="cart-drawer-subtotal" class="font-bold text-stone-900">₹0</span>
         </div>
         <div class="flex justify-between text-emerald-700 font-bold">
           <span>Home Delivery:</span>
           <span>FREE</span>
-        </div>
-        <div class="flex justify-between text-stone-500 text-[11px]">
-          <span>Delivery SMS Contact:</span>
-          <span class="font-mono font-bold text-stone-900">7004230188</span>
         </div>
         <div class="flex justify-between text-sm sm:text-base font-extrabold text-stone-900 pt-2 border-t border-stone-200">
           <span>TOTAL EXPECTED PRICE:</span>
@@ -274,29 +374,30 @@
         </div>
       </div>
 
-      <!-- SMS Button (Core Requirement) -->
-      <button 
-        id="order-sms-btn" 
-        class="w-full py-3 px-4 rounded-xl bg-stone-900 hover:bg-stone-800 text-white font-bold text-xs sm:text-sm shadow transition flex items-center justify-center gap-2 cursor-pointer">
-        <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-        <span>Send Delivery Order via SMS (7004230188)</span>
-      </button>
-
-      <!-- WhatsApp Button -->
+      <!-- Primary Channel: WhatsApp (as requested) -->
       <button 
         id="order-whatsapp-btn" 
-        class="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow transition flex items-center justify-center gap-2 cursor-pointer">
-        <span>Order via WhatsApp</span>
+        class="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow transition flex items-center justify-center gap-2 cursor-pointer">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+        <span>Send Order via WhatsApp (7004230188)</span>
       </button>
 
-      <!-- Auxiliary Helpers -->
+      <!-- SMS Button -->
+      <button 
+        id="order-sms-btn" 
+        class="w-full py-2.5 px-4 rounded-xl bg-stone-900 hover:bg-stone-800 text-white font-bold text-xs shadow transition flex items-center justify-center gap-1.5 cursor-pointer">
+        <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+        <span>Send Order via SMS (7004230188)</span>
+      </button>
+
+      <!-- Helpers -->
       <div class="flex items-center gap-2 pt-0.5">
         <button id="copy-order-btn" class="flex-1 py-1.5 text-[11px] font-semibold text-stone-700 bg-stone-200/80 hover:bg-stone-300 rounded-lg transition text-center cursor-pointer">
           📋 Copy Order Text
         </button>
-        <a href="tel:7004230188" class="flex-1 py-1.5 text-[11px] font-semibold text-stone-700 bg-stone-200/80 hover:bg-stone-300 rounded-lg transition text-center">
-          📞 Call 7004230188
-        </a>
+        <button id="drawer-call-btn" class="flex-1 py-1.5 text-[11px] font-semibold text-stone-700 bg-stone-200/80 hover:bg-stone-300 rounded-lg transition text-center cursor-pointer">
+          📞 Call Options
+        </button>
       </div>
 
     </div>
@@ -306,14 +407,16 @@
   <!-- Toast Notification Container -->
   <div id="toast-container" aria-live="polite"></div>
 
-  <!-- Compact Footer -->
-  <footer class="bg-stone-900 text-stone-400 text-xs py-6 border-t border-stone-800">
-    <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+  <!-- Minimal Footer -->
+  <footer class="bg-white text-stone-500 text-xs py-5 border-t border-stone-200">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
       <div>
-        <p class="font-bold text-white uppercase tracking-wider text-[11px]">aashirwad • Home Delivery</p>
-        <p class="text-[11px] text-stone-500">Bansilal Chowk, Hazaribagh • SMS & WhatsApp: 7004230188</p>
+        <span class="font-bold text-stone-800 lowercase">aashirwad</span>
+        <span>• Bansilal Chowk, Hazaribagh • Free Home Delivery</span>
       </div>
-      <p class="text-[11px] text-stone-500">© 2026 aashirwad. Hosted on GitHub Pages.</p>
+      <div class="text-[11px] text-stone-400">
+        Hotline: <a href="tel:7004230188" class="text-stone-700 font-semibold hover:underline">7004230188</a> | Counter: <a href="tel:9334047955" class="text-stone-700 font-semibold hover:underline">9334047955</a>
+      </div>
     </div>
   </footer>
 
