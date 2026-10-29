@@ -1,13 +1,15 @@
 /**
  * Ashirwad Restaurant - Verified Menu Data
  * Location: Bansilal Chowk, Hazaribagh, Jharkhand
- * Phone / SMS / WhatsApp: +91 7004230188
+ * Order / SMS Hotline: +91 7004230188
+ * Additional Restaurant Contacts: 9334047955, 6207228264, 9931579212
  */
 
 const MENU_CATEGORIES = [
   { id: 'all', name: 'All Items', icon: '🍽️' },
   { id: 'breads', name: 'Tandoor & Breads', icon: '🫓' },
   { id: 'starters', name: 'Starters & Chinese', icon: '🥢' },
+  { id: 'momos', name: 'Momos & Fast Food', icon: '🥟' },
   { id: 'main-veg', name: 'Main Course (Veg)', icon: '🥘' },
   { id: 'main-nonveg', name: 'Main Course (Non-Veg)', icon: '🍗' },
   { id: 'biryani-rice', name: 'Biryani & Rice', icon: '🍚' },
@@ -110,6 +112,68 @@ const MENU_ITEMS = [
     image: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80'
   },
 
+  // --- Momos & Fast Food (Featured on Menu Cover) ---
+  {
+    id: 'mo1',
+    name: 'Steamed Veg Momos (6 pcs)',
+    category: 'momos',
+    price: 80,
+    isVeg: true,
+    bestseller: true,
+    description: 'Fresh steamed dumplings packed with finely minced crunchy garden vegetables. Served with spicy red garlic dip.',
+    image: 'assets/dish_momos.jpg'
+  },
+  {
+    id: 'mo2',
+    name: 'Crispy Fried Veg Momos (6 pcs)',
+    category: 'momos',
+    price: 90,
+    isVeg: true,
+    bestseller: false,
+    description: 'Golden crisp fried vegetable momos served hot with house special fiery momo sauce and mayo.',
+    image: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=600&q=80'
+  },
+  {
+    id: 'mo3',
+    name: 'Paneer Steamed Momos (6 pcs)',
+    category: 'momos',
+    price: 100,
+    isVeg: true,
+    bestseller: true,
+    description: 'Juicy steamed momos stuffed with spiced fresh cottage cheese crumble and herbs.',
+    image: 'assets/dish_momos.jpg'
+  },
+  {
+    id: 'mo4',
+    name: 'Chicken Steamed Momos (6 pcs)',
+    category: 'momos',
+    price: 110,
+    isVeg: false,
+    bestseller: true,
+    description: 'Tender dumplings filled with minced spiced chicken and onion, steamed fresh on order.',
+    image: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=600&q=80'
+  },
+  {
+    id: 'mo5',
+    name: 'Chicken Fried Momos (6 pcs)',
+    category: 'momos',
+    price: 120,
+    isVeg: false,
+    bestseller: false,
+    description: 'Deep-fried crispy chicken dumplings with crunchy coating and savory filling.',
+    image: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=600&q=80'
+  },
+  {
+    id: 'mo6',
+    name: 'Veg Kurkure Momos',
+    category: 'momos',
+    price: 120,
+    isVeg: true,
+    bestseller: true,
+    description: 'Super crunchy cornflake crusted momos fried golden, served with spicy dip.',
+    image: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=600&q=80'
+  },
+
   // --- Starters & Chinese ---
   {
     id: 's1',
@@ -210,6 +274,16 @@ const MENU_ITEMS = [
     bestseller: true,
     description: 'Indo-Chinese favorite chicken wings shaped like lollipops, crisp fried with hot garlic sauce.',
     image: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=600&q=80'
+  },
+  {
+    id: 's11',
+    name: 'Tandoori Roast Chicken (Special)',
+    category: 'starters',
+    price: 270,
+    isVeg: false,
+    bestseller: true,
+    description: 'Charcoal roasted chicken leg marinated in yogurt, tandoori masala and lemon. Pictured on our original menu.',
+    image: 'https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=600&q=80'
   },
 
   // --- Main Course (Veg) ---
@@ -560,7 +634,7 @@ const MENU_ITEMS = [
     price: 60,
     isVeg: true,
     bestseller: false,
-    description: 'Freshly sliced cucumbers, tomatoes, onions, carrots and green chillies with lemon.',
+    description: 'Freshly sliced cucumbers, tomatoes, onions, carrots and green chillies with lemon. As shown on restaurant menu card.',
     image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=600&q=80'
   },
   {
@@ -597,20 +671,31 @@ const MENU_ITEMS = [
   }
 ];
 
-// Restaurant Contact & Metadata
+// Restaurant Contact & Metadata (Verified from Menu Card & Google Maps)
 const RESTAURANT_INFO = {
   name: "Ashirwad Restaurant",
   hindiName: "आशीर्वाद रेस्टोरेंट",
-  tagline: "Authentic Multi-Cuisine Dining & Family Restaurant",
-  phone: "7004230188",
-  phoneDisplay: "+91 70042 30188",
+  type: "A Family Restaurant (VEG & NON VEG)",
+  tagline: "Authentic Multi-Cuisine Dining & Tandoor Specialist",
+  primaryHotline: "7004230188",
+  primaryHotlineDisplay: "+91 70042 30188",
   whatsappNumber: "917004230188",
+  printedNumbers: ["9334047955", "6207228264", "9931579212"],
   address: "Near Bansilal Chowk / Kani Bazar Chowk, Munka Bagicha, Hazaribagh, Jharkhand - 825301",
   coordinates: {
     lat: 23.9928812,
     lng: 85.3616478
   },
-  googleMapsUrl: "https://www.google.co.in/maps/place/Ashirwad+Restaurant/@23.9928861,85.3590729,17z/data=!3m1!4b1!4m6!3m5!1s0x39f49c1b13d3edcf:0xce0a5655f48c7786!8m2!3d23.9928812!4d85.3616478!16s%2Fg%2F11cs5jppyh",
+  googleMapsUrl: "https://www.google.co.in/maps/place/Ashirwad+Restaurant/@23.9928812,85.3616478,17z/data=!4m6!3m5!1s0x39f49c1b13d3edcf:0xce0a5655f48c7786!8m2!3d23.9928812!4d85.3616478!16s%2Fg%2F11cs5jppyh",
   timings: "10:30 AM – 10:30 PM (All 7 Days)",
-  services: ["Dine-In", "Takeaway", "Home Delivery", "Party & Bulk Orders"]
+  amenities: [
+    "❄️ Fully Air Conditioned",
+    "🚚 Free Home Delivery",
+    "💧 Hygienic Aquaguard Bacteria Free Water",
+    "🚭 Smoking & Drinking Strictly Prohibited",
+    "🎊 Banquet Hall Facility Available",
+    "🚗 Customer Parking Facility"
+  ],
+  storefrontImage: "assets/restaurant_storefront.jpg",
+  menuCoverImage: "assets/menu_photo.jpg"
 };

@@ -1,6 +1,8 @@
 /**
  * Ashirwad Restaurant - Core Application Logic
- * Supports Menu Filtering, Live Search, Cart State, WhatsApp & SMS Dispatch to 7004230188
+ * Supports Real-time Price Calculation, Menu Filtering, Live Search,
+ * Cart State with LocalStorage, Lightbox, and SMS / WhatsApp Order Dispatch to 7004230188
+ * with Item Names, Quantities, Expected Unit Prices, and Total Expected Price.
  */
 
 // Application State
@@ -53,7 +55,7 @@ function renderCategories() {
 
   container.innerHTML = MENU_CATEGORIES.map(cat => `
     <button
-      class="category-tab px-4 py-2 rounded-full font-medium text-sm border ${state.activeCategory === cat.id ? 'active' : 'bg-white text-stone-700 border-stone-200 hover:border-orange-300 hover:bg-orange-50'}"
+      class="category-tab px-4 py-2 rounded-full font-medium text-sm border flex-shrink-0 ${state.activeCategory === cat.id ? 'active' : 'bg-white text-stone-700 border-stone-200 hover:border-orange-300 hover:bg-orange-50'}"
       data-category="${cat.id}">
       <span>${cat.icon}</span>
       <span class="ml-1.5">${cat.name}</span>
@@ -140,6 +142,7 @@ function renderMenu() {
 
   grid.innerHTML = items.map(item => {
     const qty = state.cart[item.id] || 0;
+    const lineTotal = item.price * qty;
     return `
       <div class="menu-card bg-white rounded-2xl border border-stone-200/80 overflow-hidden flex flex-col justify-between shadow-sm hover:border-orange-300">
         <div>
@@ -171,6 +174,7 @@ function renderMenu() {
             <div class="flex items-start justify-between gap-2">
               <h3 class="font-bold text-stone-900 text-base leading-snug">${item.name}</h3>
               <div class="text-right flex-shrink-0">
+                <span class="text-xs text-stone-400 block font-medium">Expected Price</span>
                 <span class="text-lg font-extrabold text-stone-900">₹${item.price}</span>
               </div>
             </div>
@@ -178,30 +182,37 @@ function renderMenu() {
           </div>
         </div>
 
-        <!-- Add / Qty Control Footer -->
+        <!-- Add / Qty Control Footer with Totaling -->
         <div class="p-4 pt-0">
           ${qty === 0 ? `
             <button 
               class="w-full py-2 px-4 rounded-xl bg-orange-50 hover:bg-orange-600 text-orange-700 hover:text-white font-bold text-sm border border-orange-200 hover:border-transparent transition-all flex items-center justify-center gap-1.5 add-to-order-btn"
               data-item-id="${item.id}">
               <span>Add to Order</span>
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+              <span class="text-xs font-semibold opacity-75">· ₹${item.price}</span>
+              <svg class="w-4 h-4 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
             </button>
           ` : `
-            <div class="flex items-center justify-between bg-orange-600 text-white rounded-xl p-1 shadow-sm">
-              <button 
-                class="qty-btn bg-white/20 hover:bg-white/30 text-white decrease-qty-btn" 
-                data-item-id="${item.id}"
-                aria-label="Decrease quantity">
-                -
-              </button>
-              <span class="font-bold text-sm px-3 select-none">${qty} in order</span>
-              <button 
-                class="qty-btn bg-white/20 hover:bg-white/30 text-white increase-qty-btn" 
-                data-item-id="${item.id}"
-                aria-label="Increase quantity">
-                +
-              </button>
+            <div>
+              <div class="flex items-center justify-between bg-orange-600 text-white rounded-xl p-1 shadow-sm">
+                <button 
+                  class="qty-btn bg-white/20 hover:bg-white/30 text-white decrease-qty-btn" 
+                  data-item-id="${item.id}"
+                  aria-label="Decrease quantity">
+                  -
+                </button>
+                <span class="font-bold text-sm px-2 select-none">${qty} in order</span>
+                <button 
+                  class="qty-btn bg-white/20 hover:bg-white/30 text-white increase-qty-btn" 
+                  data-item-id="${item.id}"
+                  aria-label="Increase quantity">
+                  +
+                </button>
+              </div>
+              <div class="flex items-center justify-between mt-1.5 px-1 text-[11px] text-stone-500 font-semibold">
+                <span>Subtotal:</span>
+                <span class="text-orange-700 font-bold">₹${lineTotal}</span>
+              </div>
             </div>
           `}
         </div>
@@ -211,23 +222,20 @@ function renderMenu() {
 
   // Attach Item Card Button Handlers
   grid.querySelectorAll('.add-to-order-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const id = btn.dataset.itemId;
-      addToCart(id);
+    btn.addEventListener('click', () => {
+      addToCart(btn.dataset.itemId);
     });
   });
 
   grid.querySelectorAll('.increase-qty-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const id = btn.dataset.itemId;
-      addToCart(id);
+    btn.addEventListener('click', () => {
+      addToCart(btn.dataset.itemId);
     });
   });
 
   grid.querySelectorAll('.decrease-qty-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const id = btn.dataset.itemId;
-      removeFromCart(id);
+    btn.addEventListener('click', () => {
+      removeFromCart(btn.dataset.itemId);
     });
   });
 }
@@ -240,7 +248,8 @@ function addToCart(itemId) {
   renderMenu();
   const item = MENU_ITEMS.find(i => i.id === itemId);
   if (item) {
-    showToast(`Added ${item.name} to order`);
+    const curQty = state.cart[itemId];
+    showToast(`Added ${item.name} (${curQty}x = ₹${item.price * curQty})`);
   }
 }
 
@@ -283,11 +292,13 @@ function getCartTotals() {
     const item = MENU_ITEMS.find(i => i.id === id);
     if (item && qty > 0) {
       count += qty;
-      totalAmount += (item.price * qty);
+      const lineTotal = item.price * qty;
+      totalAmount += lineTotal;
       items.push({
         ...item,
         quantity: qty,
-        lineTotal: item.price * qty
+        unitPrice: item.price,
+        lineTotal: lineTotal
       });
     }
   }
@@ -323,7 +334,7 @@ function updateCartUI() {
   renderCartDrawer(items, count, totalAmount);
 }
 
-// Render Cart Drawer
+// Render Cart Drawer with item breakdown & expected prices
 function renderCartDrawer(items, count, totalAmount) {
   const drawerItemsContainer = document.getElementById('cart-drawer-items');
   const drawerSummary = document.getElementById('cart-drawer-summary');
@@ -332,7 +343,7 @@ function renderCartDrawer(items, count, totalAmount) {
   const drawerHeaderCount = document.getElementById('cart-drawer-count');
 
   if (drawerHeaderCount) {
-    drawerHeaderCount.textContent = `${count} ${count === 1 ? 'item' : 'items'}`;
+    drawerHeaderCount.textContent = `${count} ${count === 1 ? 'item' : 'items'} selected • Expected Total: ₹${totalAmount}`;
   }
 
   if (count === 0) {
@@ -354,11 +365,11 @@ function renderCartDrawer(items, count, totalAmount) {
           <span class="food-badge ${item.isVeg ? 'veg' : 'non-veg'} flex-shrink-0"></span>
           <div class="min-w-0">
             <h4 class="font-bold text-stone-900 text-sm truncate">${item.name}</h4>
-            <span class="text-xs text-stone-500">₹${item.price} each</span>
+            <span class="text-xs text-stone-500">Expected: ₹${item.unitPrice} each</span>
           </div>
         </div>
 
-        <div class="flex items-center gap-3 flex-shrink-0">
+        <div class="flex items-center gap-2.5 flex-shrink-0">
           <div class="flex items-center bg-stone-100 rounded-lg p-0.5 border border-stone-200">
             <button 
               class="w-6 h-6 flex items-center justify-center font-bold text-stone-700 hover:text-orange-600 drawer-decrease-btn"
@@ -372,7 +383,10 @@ function renderCartDrawer(items, count, totalAmount) {
               +
             </button>
           </div>
-          <span class="font-extrabold text-stone-900 text-sm w-16 text-right">₹${item.lineTotal}</span>
+          <div class="text-right w-16">
+            <span class="font-extrabold text-stone-900 text-sm block">₹${item.lineTotal}</span>
+            <span class="text-[10px] text-stone-400">Total</span>
+          </div>
           <button 
             class="text-stone-400 hover:text-red-500 drawer-delete-btn p-1"
             data-item-id="${item.id}"
@@ -408,7 +422,6 @@ function openCartDrawer() {
   const overlay = document.getElementById('cart-drawer-overlay');
   if (drawer && overlay) {
     overlay.classList.remove('hidden');
-    // slight delay to enable transition
     setTimeout(() => {
       overlay.classList.remove('opacity-0');
       overlay.classList.add('opacity-100');
@@ -436,7 +449,8 @@ function closeCartDrawer() {
   }
 }
 
-// Generate Formatted Order Text for WhatsApp & SMS
+// Generate Detailed Order Message for WhatsApp & Clipboard
+// Explicitly includes Menu Items, Quantities, Unit Expected Price, and Total Expected Price
 function generateOrderMessage() {
   const { items, totalAmount, count } = getCartTotals();
   if (count === 0) return null;
@@ -447,31 +461,35 @@ function generateOrderMessage() {
   const locationOrTable = document.getElementById('cust-table-address')?.value.trim() || (orderType === 'Dine-In' ? 'Table at Restaurant' : 'Pickup at Counter');
   const instructions = document.getElementById('cust-notes')?.value.trim();
 
-  let message = `🍽️ *ASHIRWAD RESTAURANT - NEW ORDER*\n`;
-  message += `━━━━━━━━━━━━━━━━━━━━━\n`;
+  let message = `🍽️ *ASHIRWAD RESTAURANT - ORDER SUMMARY*\n`;
+  message += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
   message += `📍 *Order Type:* ${orderType.toUpperCase()}\n`;
-  message += `👤 *Customer:* ${name}\n`;
-  message += `📞 *Contact:* ${phone}\n`;
+  message += `👤 *Customer Name:* ${name}\n`;
+  message += `📞 *Customer Phone:* ${phone}\n`;
   message += `🏢 *Table / Address:* ${locationOrTable}\n`;
   if (instructions) {
-    message += `📝 *Note:* ${instructions}\n`;
+    message += `📝 *Cooking Notes:* ${instructions}\n`;
   }
-  message += `━━━━━━━━━━━━━━━━━━━━━\n`;
-  message += `*ORDER ITEMS:*\n`;
+  message += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+  message += `🛒 *SELECTED MENU ITEMS & EXPECTED PRICE:*\n`;
 
   items.forEach((item, index) => {
-    message += `${index + 1}. ${item.name} x ${item.quantity} = ₹${item.lineTotal}\n`;
+    message += `${index + 1}. *${item.name}*\n`;
+    message += `   • Qty: ${item.quantity} | Expected Price: ₹${item.unitPrice} each\n`;
+    message += `   • Expected Line Total: ₹${item.lineTotal}\n`;
   });
 
-  message += `━━━━━━━━━━━━━━━━━━━━━\n`;
-  message += `💰 *TOTAL AMOUNT: ₹${totalAmount}*\n`;
+  message += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+  message += `💵 *TOTAL EXPECTED PRICE: ₹${totalAmount}*\n`;
+  message += `🚚 *Home Delivery:* Free (As per restaurant menu)\n`;
   message += `⏰ *Timestamp:* ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}\n`;
-  message += `\nPlease confirm and prepare our order. Thank you!`;
+  message += `\n*Note:* Expected prices are fetched directly from the restaurant menu. Please confirm and prepare our order. Thank you!`;
 
   return message;
 }
 
-// SMS Plain Text Version (Compact & standard compatible)
+// Generate SMS Message to 7004230188
+// Explicitly formatted with menu items, quantities, and expected price breakdown
 function generateSMSMessage() {
   const { items, totalAmount, count } = getCartTotals();
   if (count === 0) return null;
@@ -481,13 +499,19 @@ function generateSMSMessage() {
   const locationOrTable = document.getElementById('cust-table-address')?.value.trim() || (orderType === 'Dine-In' ? 'Table' : 'Takeaway');
   const instructions = document.getElementById('cust-notes')?.value.trim();
 
-  let sms = `ASHIRWAD RESTAURANT ORDER [${orderType}]:\n`;
+  let sms = `ASHIRWAD RESTAURANT ORDER [${orderType}]\n`;
   sms += `Name: ${name} (${locationOrTable})\n`;
-  items.forEach(i => {
-    sms += `- ${i.name} x ${i.quantity} (Rs ${i.lineTotal})\n`;
+  sms += `\nSELECTED ITEMS & EXPECTED PRICE:\n`;
+  
+  items.forEach((i, idx) => {
+    sms += `${idx + 1}. ${i.name} x${i.quantity} @ Rs.${i.unitPrice} = Rs.${i.lineTotal}\n`;
   });
-  sms += `Total: Rs ${totalAmount}`;
-  if (instructions) sms += `\nNote: ${instructions}`;
+
+  sms += `\nTOTAL EXPECTED PRICE: Rs.${totalAmount}\n`;
+  if (instructions) {
+    sms += `Note: ${instructions}\n`;
+  }
+  sms += `Please confirm availability & prepare order.`;
 
   return sms;
 }
@@ -496,7 +520,7 @@ function generateSMSMessage() {
 function sendViaWhatsApp() {
   const { count } = getCartTotals();
   if (count === 0) {
-    alert("Please add items to your order first!");
+    alert("Please select menu items first!");
     return;
   }
 
@@ -504,19 +528,19 @@ function sendViaWhatsApp() {
   const phone = RESTAURANT_INFO.whatsappNumber; // 917004230188
   const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
   window.open(url, '_blank');
-  showToast("Opening WhatsApp with your order...");
+  showToast("Opening WhatsApp with menu items & expected price...");
 }
 
-// Dispatch: SMS
+// Dispatch: SMS (Directly to 7004230188)
 function sendViaSMS() {
-  const { count } = getCartTotals();
+  const { count, totalAmount } = getCartTotals();
   if (count === 0) {
-    alert("Please add items to your order first!");
+    alert("Please select menu items first!");
     return;
   }
 
   const smsText = generateSMSMessage();
-  const phone = RESTAURANT_INFO.phone; // 7004230188
+  const phone = RESTAURANT_INFO.primaryHotline; // 7004230188
 
   // Detect iOS vs Android for correct SMS protocol
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -528,7 +552,7 @@ function sendViaSMS() {
 
   // Trigger SMS Link
   window.location.href = smsUrl;
-  showToast("Opening SMS to 7004230188...");
+  showToast(`Opening SMS to 7004230188 (Total Expected Price: ₹${totalAmount})...`);
 }
 
 // Copy Order to Clipboard
@@ -538,8 +562,8 @@ function copyOrderToClipboard(showUserToast = true) {
 
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(message).then(() => {
-      if (showUserToast) showToast("Order copied to clipboard! Ready to paste.");
-    }).catch(err => {
+      if (showUserToast) showToast("Order & Expected Price copied to clipboard!");
+    }).catch(() => {
       fallbackCopyText(message, showUserToast);
     });
   } else {
@@ -557,11 +581,32 @@ function fallbackCopyText(text, showUserToast) {
   textArea.select();
   try {
     document.execCommand('copy');
-    if (showUserToast) showToast("Order copied to clipboard!");
+    if (showUserToast) showToast("Order & Expected Price copied to clipboard!");
   } catch (err) {
     console.error('Fallback copy error', err);
   }
   document.body.removeChild(textArea);
+}
+
+// Open Lightbox for Menu Card or Storefront Image
+function openLightbox(src, title) {
+  const modal = document.getElementById('image-lightbox');
+  const img = document.getElementById('lightbox-img');
+  const caption = document.getElementById('lightbox-caption');
+  if (modal && img && caption) {
+    img.src = src;
+    caption.textContent = title;
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function closeLightbox() {
+  const modal = document.getElementById('image-lightbox');
+  if (modal) {
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
 }
 
 // Toast notification helper
@@ -619,10 +664,25 @@ function setupEventListeners() {
   const drawerOverlay = document.getElementById('cart-drawer-overlay');
   if (drawerOverlay) drawerOverlay.addEventListener('click', closeCartDrawer);
 
-  // Escape key to close drawer
+  // Lightbox Close
+  const closeLightboxBtn = document.getElementById('close-lightbox-btn');
+  if (closeLightboxBtn) closeLightboxBtn.addEventListener('click', closeLightbox);
+
+  const lightbox = document.getElementById('image-lightbox');
+  if (lightbox) {
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) closeLightbox();
+    });
+  }
+
+  // Escape key to close drawer or lightbox
   window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && state.isDrawerOpen) {
-      closeCartDrawer();
+    if (e.key === 'Escape') {
+      if (!document.getElementById('image-lightbox')?.classList.contains('hidden')) {
+        closeLightbox();
+      } else if (state.isDrawerOpen) {
+        closeCartDrawer();
+      }
     }
   });
 
@@ -652,12 +712,12 @@ function setupEventListeners() {
       if (!tableAddressInput) return;
       if (radio.value === 'Dine-In') {
         if (tableAddressLabel) tableAddressLabel.textContent = "Table Number";
-        tableAddressInput.placeholder = "e.g. Table 4 / Family Cabin";
+        tableAddressInput.placeholder = "e.g. Table 4 / Family AC Cabin";
       } else if (radio.value === 'Takeaway') {
         if (tableAddressLabel) tableAddressLabel.textContent = "Pickup Time & Notes";
         tableAddressInput.placeholder = "e.g. Ready in 20 mins / Counter pickup";
       } else {
-        if (tableAddressLabel) tableAddressLabel.textContent = "Delivery Address in Hazaribagh";
+        if (tableAddressLabel) tableAddressLabel.textContent = "Delivery Address in Hazaribagh (Free Home Delivery)";
         tableAddressInput.placeholder = "e.g. Near Bansilal Chowk, Main Road";
       }
     });
@@ -670,11 +730,18 @@ function setupEventListeners() {
     mobileMenuBtn.addEventListener('click', () => {
       mobileNav.classList.toggle('hidden');
     });
-    // Close mobile nav when clicking a link
     mobileNav.querySelectorAll('a').forEach(a => {
       a.addEventListener('click', () => mobileNav.classList.add('hidden'));
     });
   }
+
+  // Lightbox triggers for menu photo and storefront photo
+  document.querySelectorAll('[data-lightbox-src]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      openLightbox(el.dataset.lightboxSrc, el.dataset.lightboxTitle || 'Ashirwad Restaurant Image');
+    });
+  });
 }
 
 function updateDietFilterUI() {
