@@ -118,12 +118,15 @@ function updateLocationHeader() {
 }
 
 // Address / Checkout Modal Controls
-function openAddressModal(isCheckout = false, checkoutType = 'whatsapp') {
-  state.pendingCheckoutType = checkoutType;
+function openAddressModal(isCheckout = false, checkoutType = null) {
+  // If not checkout, pendingCheckoutType is null so it ONLY saves address
+  state.pendingCheckoutType = isCheckout ? checkoutType : null;
+
   const modal = document.getElementById('address-modal');
   const addrInput = document.getElementById('modal-address');
   const nameInput = document.getElementById('modal-name');
   const phoneInput = document.getElementById('modal-phone');
+  const submitBtn = document.getElementById('address-submit-btn');
   const skipBtn = document.getElementById('skip-address-btn');
   const title = document.getElementById('address-modal-title');
 
@@ -133,10 +136,16 @@ function openAddressModal(isCheckout = false, checkoutType = 'whatsapp') {
     if (phoneInput) phoneInput.value = state.delivery.phone;
 
     if (isCheckout) {
-      if (title) title.textContent = "Confirm Delivery Address";
-      if (skipBtn) skipBtn.classList.remove('hidden');
+      if (title) title.textContent = "Delivery Address for Order";
+      if (submitBtn) submitBtn.textContent = checkoutType === 'whatsapp' ? "Save & Proceed to WhatsApp" : "Save & Proceed to SMS";
+      if (skipBtn) {
+        skipBtn.textContent = checkoutType === 'whatsapp' ? "Skip Address & Continue to WhatsApp" : "Skip Address & Continue to SMS";
+        skipBtn.classList.remove('hidden');
+      }
     } else {
+      // From top section: ONLY save address
       if (title) title.textContent = "Your Delivery Address";
+      if (submitBtn) submitBtn.textContent = "Save Address";
       if (skipBtn) skipBtn.classList.add('hidden');
     }
 
