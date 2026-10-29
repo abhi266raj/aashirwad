@@ -100,20 +100,30 @@ function saveCartToStorage() {
   }
 }
 
-// Update Top Bar Location Display
+// Update Top Bar & Mobile Location Display
 function updateLocationHeader() {
-  const label = document.getElementById('header-location-label');
-  if (!label) return;
+  const desktopLabel = document.getElementById('header-location-label');
+  const mobileLabel = document.getElementById('mobile-location-label');
+  const drawerAddr = document.getElementById('drawer-delivery-addr');
+  const addrText = state.delivery.address;
 
-  if (state.delivery.address) {
-    label.innerHTML = `
-      <span class="truncate max-w-[140px] sm:max-w-[260px] inline-block font-semibold text-stone-800">${state.delivery.address}</span>
-      <span class="text-orange-600 font-bold ml-1 text-[11px] underline">Change</span>
-    `;
-  } else {
-    label.innerHTML = `
-      <span class="text-orange-700 font-bold">Set Delivery Location ▾</span>
-    `;
+  if (desktopLabel) {
+    if (addrText) {
+      desktopLabel.innerHTML = `
+        <span class="truncate max-w-[140px] sm:max-w-[220px] inline-block font-semibold text-stone-800">${addrText}</span>
+        <span class="text-brand-800 font-bold ml-1 text-[11px] underline">Change</span>
+      `;
+    } else {
+      desktopLabel.innerHTML = `<span class="text-brand-800 font-bold">Set Delivery Location ▾</span>`;
+    }
+  }
+
+  if (mobileLabel) {
+    mobileLabel.textContent = addrText || 'Set Location (Tap here)';
+  }
+
+  if (drawerAddr) {
+    drawerAddr.textContent = addrText || 'Address not set (tap to set)';
   }
 }
 
@@ -197,7 +207,7 @@ function renderCategories() {
 
   container.innerHTML = MENU_CATEGORIES.map(cat => `
     <button
-      class="category-tab px-3.5 py-1.5 rounded-full font-semibold text-xs border flex-shrink-0 transition-all cursor-pointer ${state.activeCategory === cat.id ? 'bg-orange-600 text-white border-orange-600 shadow-sm' : 'bg-white text-stone-700 border-stone-200 hover:border-orange-300 hover:bg-orange-50'}"
+      class="category-tab px-3.5 py-1.5 rounded-full font-semibold text-xs border flex-shrink-0 transition-all cursor-pointer ${state.activeCategory === cat.id ? 'active bg-stone-900 text-white border-stone-900 shadow-sm' : 'bg-white text-stone-700 border-stone-200 hover:border-stone-300 hover:bg-stone-50'}"
       data-category="${cat.id}">
       <span>${cat.icon}</span>
       <span class="ml-1">${cat.name}</span>
@@ -250,7 +260,7 @@ function renderMenu() {
         <div class="text-3xl mb-2">🔍</div>
         <h3 class="text-sm font-bold text-stone-800">No matching dishes</h3>
         <p class="text-xs text-stone-500 mt-1">Try another search term or view all dishes.</p>
-        <button id="reset-search-btn" class="mt-3 px-4 py-1.5 bg-orange-600 text-white rounded-lg text-xs font-bold hover:bg-orange-700 transition cursor-pointer">
+        <button id="reset-search-btn" class="mt-3 px-4 py-1.5 bg-brand-800 text-white rounded-xl text-xs font-bold hover:bg-brand-900 transition cursor-pointer">
           Show All Dishes
         </button>
       </div>
@@ -272,73 +282,116 @@ function renderMenu() {
     const qty = state.cart[item.id] || 0;
     const lineTotal = item.price * qty;
     return `
-      <div class="menu-card bg-white rounded-2xl border border-stone-200 overflow-hidden flex flex-col justify-between shadow-sm hover:shadow-md transition">
-        <div>
-          <!-- Dish Image -->
-          <div class="relative w-full aspect-[4/3] bg-stone-100 overflow-hidden">
-            <img 
-              src="${item.image}" 
-              alt="${item.name}" 
-              loading="lazy" 
-              class="w-full h-full object-cover"
-              onerror="this.src='assets/veg/makhan-roti/dish.png';"
-            />
-            <div class="absolute top-2.5 left-2.5 flex items-center gap-1">
+      <div class="menu-card bg-white rounded-2xl border border-stone-200/90 shadow-sm hover:shadow-md transition p-3 sm:p-0 flex flex-row sm:flex-col justify-between overflow-hidden gap-3 sm:gap-0">
+        
+        <!-- DESKTOP TOP IMAGE (hidden on mobile) -->
+        <div class="hidden sm:block relative w-full aspect-[4/3] bg-stone-100 overflow-hidden">
+          <img 
+            src="${item.image}" 
+            alt="${item.name}" 
+            loading="lazy" 
+            class="w-full h-full object-cover"
+            onerror="this.src='assets/veg/makhan-roti/dish.png';"
+          />
+          <div class="absolute top-2.5 left-2.5 flex items-center gap-1">
+            <span class="food-badge ${item.isVeg ? 'veg' : 'non-veg'}"></span>
+            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded ${item.isVeg ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'} backdrop-blur-sm">
+              ${item.isVeg ? 'VEG' : 'NON-VEG'}
+            </span>
+          </div>
+          ${item.bestseller ? `
+            <span class="absolute top-2.5 right-2.5 text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-amber-500 text-white shadow-sm font-sans tracking-wide">
+              ★ Popular
+            </span>
+          ` : ''}
+        </div>
+
+        <!-- DETAILS SECTION (Full left column on mobile, body on desktop) -->
+        <div class="flex-1 flex flex-col justify-between sm:p-4 min-w-0">
+          <div>
+            <!-- Badges on mobile -->
+            <div class="flex sm:hidden items-center gap-1.5 mb-1">
               <span class="food-badge ${item.isVeg ? 'veg' : 'non-veg'}"></span>
-              <span class="text-[10px] font-bold px-1.5 py-0.5 rounded ${item.isVeg ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'} backdrop-blur-sm">
+              <span class="text-[10px] font-bold ${item.isVeg ? 'text-emerald-700' : 'text-red-700'}">
                 ${item.isVeg ? 'VEG' : 'NON-VEG'}
               </span>
+              ${item.bestseller ? `
+                <span class="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200">
+                  ★ Bestseller
+                </span>
+              ` : ''}
             </div>
-            ${item.bestseller ? `
-              <span class="absolute top-2.5 right-2.5 text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-amber-500 text-white shadow-sm">
-                ★ Popular
-              </span>
-            ` : ''}
+
+            <h3 class="font-bold text-stone-900 text-sm sm:text-base leading-snug">${item.name}</h3>
+            <div class="text-sm sm:text-base font-black text-stone-900 mt-0.5">₹${item.price}</div>
+            <p class="text-stone-500 text-xs mt-1 line-clamp-2 leading-relaxed">${item.description}</p>
           </div>
 
-          <!-- Dish Info -->
-          <div class="p-3.5">
-            <div class="flex items-start justify-between gap-1.5">
-              <h3 class="font-bold text-stone-900 text-sm leading-snug">${item.name}</h3>
-              <span class="text-sm sm:text-base font-extrabold text-stone-900 flex-shrink-0">₹${item.price}</span>
-            </div>
-            <p class="text-stone-500 text-xs mt-1 line-clamp-2">${item.description}</p>
+          <!-- Desktop Add / Stepper Button (hidden on mobile) -->
+          <div class="hidden sm:block pt-3">
+            ${qty === 0 ? `
+              <button 
+                class="w-full py-2 px-3 rounded-xl bg-stone-50 hover:bg-brand-800 text-brand-800 hover:text-white font-bold text-xs border border-brand-200 hover:border-transparent transition flex items-center justify-center gap-1 add-to-order-btn cursor-pointer"
+                data-item-id="${item.id}">
+                <span>Add to Order</span>
+                <span>· ₹${item.price}</span>
+              </button>
+            ` : `
+              <div>
+                <div class="flex items-center justify-between bg-brand-800 text-white rounded-xl p-1 shadow-sm">
+                  <button 
+                    class="qty-btn bg-white/20 hover:bg-white/30 text-white decrease-qty-btn cursor-pointer" 
+                    data-item-id="${item.id}"
+                    aria-label="Decrease quantity">
+                    -
+                  </button>
+                  <span class="font-bold text-xs px-2 select-none">${qty} in order</span>
+                  <button 
+                    class="qty-btn bg-white/20 hover:bg-white/30 text-white increase-qty-btn cursor-pointer" 
+                    data-item-id="${item.id}"
+                    aria-label="Increase quantity">
+                    +
+                  </button>
+                </div>
+                <div class="flex items-center justify-between mt-1 px-1 text-[11px] text-stone-500 font-medium">
+                  <span>Subtotal:</span>
+                  <span class="text-brand-800 font-bold">₹${lineTotal}</span>
+                </div>
+              </div>
+            `}
           </div>
         </div>
 
-        <!-- Add & Stepper Control -->
-        <div class="p-3.5 pt-0">
-          ${qty === 0 ? `
-            <button 
-              class="w-full py-2 px-3 rounded-xl bg-orange-50 hover:bg-orange-600 text-orange-700 hover:text-white font-bold text-xs border border-orange-200 hover:border-transparent transition flex items-center justify-center gap-1 add-to-order-btn cursor-pointer"
-              data-item-id="${item.id}">
-              <span>Add</span>
-              <span>· ₹${item.price}</span>
-            </button>
-          ` : `
-            <div>
-              <div class="flex items-center justify-between bg-orange-600 text-white rounded-xl p-1 shadow-sm">
+        <!-- MOBILE RIGHT IMAGE & ANCHORED BUTTON (hidden on desktop) -->
+        <div class="sm:hidden relative w-24 flex flex-col items-center justify-center flex-shrink-0">
+          <img 
+            src="${item.image}" 
+            alt="${item.name}" 
+            loading="lazy" 
+            class="w-24 h-24 rounded-2xl object-cover bg-stone-100 shadow-sm border border-stone-200/70"
+            onerror="this.src='assets/veg/makhan-roti/dish.png';"
+          />
+          <div class="-mt-3.5 z-10 w-20 flex justify-center">
+            ${qty === 0 ? `
+              <button 
+                class="w-20 py-1.5 px-2 rounded-xl bg-white text-brand-800 font-black text-xs uppercase tracking-wider border border-brand-200 shadow-md hover:bg-stone-50 active:scale-95 transition add-to-order-btn cursor-pointer text-center"
+                data-item-id="${item.id}">
+                ADD
+              </button>
+            ` : `
+              <div class="w-20 flex items-center justify-between bg-brand-800 text-white rounded-xl shadow-md p-0.5">
                 <button 
-                  class="qty-btn bg-white/20 hover:bg-white/30 text-white decrease-qty-btn cursor-pointer" 
-                  data-item-id="${item.id}"
-                  aria-label="Decrease quantity">
-                  -
-                </button>
-                <span class="font-bold text-xs px-2 select-none">${qty} in cart</span>
+                  class="w-6 h-6 flex items-center justify-center font-bold text-white decrease-qty-btn cursor-pointer text-sm" 
+                  data-item-id="${item.id}">-</button>
+                <span class="font-black text-xs px-1 select-none">${qty}</span>
                 <button 
-                  class="qty-btn bg-white/20 hover:bg-white/30 text-white increase-qty-btn cursor-pointer" 
-                  data-item-id="${item.id}"
-                  aria-label="Increase quantity">
-                  +
-                </button>
+                  class="w-6 h-6 flex items-center justify-center font-bold text-white increase-qty-btn cursor-pointer text-sm" 
+                  data-item-id="${item.id}">+</button>
               </div>
-              <div class="flex items-center justify-between mt-1 px-1 text-[11px] text-stone-500 font-medium">
-                <span>Subtotal:</span>
-                <span class="text-orange-700 font-bold">₹${lineTotal}</span>
-              </div>
-            </div>
-          `}
+            `}
+          </div>
         </div>
+
       </div>
     `;
   }).join('');
@@ -426,10 +479,18 @@ function updateCartUI() {
   if (navBadge) navBadge.textContent = count;
   if (navAmount) navAmount.textContent = `₹${totalAmount}`;
 
+  const floatBar = document.getElementById('floating-cart-bar');
   const floatBtn = document.getElementById('floating-cart-btn');
   const floatCount = document.getElementById('floating-cart-count');
   const floatAmount = document.getElementById('floating-cart-amount');
-  if (floatBtn) {
+  
+  if (floatBar) {
+    if (count > 0) {
+      floatBar.classList.remove('hidden');
+    } else {
+      floatBar.classList.add('hidden');
+    }
+  } else if (floatBtn) {
     if (count > 0) {
       floatBtn.classList.remove('hidden');
     } else {
@@ -690,8 +751,9 @@ function setupEventListeners() {
     });
   });
 
-  // Top Section Location Change Trigger
+  // Top Section & Mobile Location Change Triggers
   document.getElementById('header-location-btn')?.addEventListener('click', () => openAddressModal(false));
+  document.getElementById('mobile-location-btn')?.addEventListener('click', () => openAddressModal(false));
   document.getElementById('drawer-change-addr-btn')?.addEventListener('click', () => {
     closeCartDrawer();
     openAddressModal(false);
@@ -735,6 +797,7 @@ function setupEventListeners() {
   // Drawer Triggers
   document.getElementById('nav-cart-btn')?.addEventListener('click', openCartDrawer);
   document.getElementById('floating-cart-btn')?.addEventListener('click', openCartDrawer);
+  document.getElementById('floating-cart-bar')?.addEventListener('click', openCartDrawer);
   document.getElementById('close-drawer-btn')?.addEventListener('click', closeCartDrawer);
   document.getElementById('cart-drawer-overlay')?.addEventListener('click', closeCartDrawer);
   document.getElementById('clear-cart-btn')?.addEventListener('click', clearCart);
