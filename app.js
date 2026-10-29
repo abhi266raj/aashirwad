@@ -544,7 +544,7 @@ function closeCartDrawer() {
   }
 }
 
-// Order Compilation (Message to restaurant requesting home delivery)
+// Order Compilation (Trigger to restaurant to confirm and deliver the order)
 function generateWhatsAppMessage() {
   const { items, totalAmount, count } = getCartTotals();
   if (count === 0) return null;
@@ -554,20 +554,20 @@ function generateWhatsAppMessage() {
   const name = state.delivery.name || '';
   const phone = state.delivery.phone || '';
 
-  let msg = `🛵 *Home Delivery Order - aashirwad*\n`;
+  let msg = `🔔 *NEW HOME DELIVERY ORDER - PLEASE CONFIRM*\n`;
   msg += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
-  msg += `Hello aashirwad, please deliver the following order:\n\n`;
-  msg += `📍 *Delivery Address:* ${address}\n`;
+  msg += `*To:* aashirwad Restaurant (Bansilal Chowk)\n`;
+  msg += `*From Customer:* Please prepare and deliver this order:\n\n`;
+  msg += `📍 *DELIVERY ADDRESS:* ${address}\n`;
   if (name) msg += `👤 *Customer Name:* ${name}\n`;
-  if (phone) msg += `📞 *Customer Phone:* ${phone}\n`;
+  if (phone) msg += `📞 *Customer Contact:* ${phone}\n`;
   if (notes) msg += `📝 *Kitchen Instructions:* ${notes}\n`;
   msg += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
-  msg += `🍽️ *ORDERED ITEMS:*\n`;
+  msg += `🍽️ *ITEMS TO PREPARE:*\n`;
 
   items.forEach((item, index) => {
-    msg += `${index + 1}. *${item.name}*\n`;
-    msg += `   • Quantity: ${item.quantity}  |  Price: ₹${item.unitPrice} each\n`;
-    msg += `   • Subtotal: ₹${item.lineTotal}\n`;
+    msg += `${index + 1}. *${item.name}* x ${item.quantity}\n`;
+    msg += `   • Price: ₹${item.unitPrice} each  |  Subtotal: ₹${item.lineTotal}\n`;
   });
 
   msg += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
@@ -575,7 +575,9 @@ function generateWhatsAppMessage() {
   msg += `🚀 *Delivery:* FREE Home Delivery\n`;
   msg += `⏰ *Order Time:* ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}\n`;
   msg += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
-  msg += `Please confirm my order and estimated delivery time. Thank you!`;
+  msg += `👉 *ACTION FOR RESTAURANT:*\n`;
+  msg += `Please reply with *"ORDER CONFIRMED"* and your estimated delivery time (e.g. 30-40 mins).\n`;
+  msg += `If any item is unavailable, please call customer immediately.`;
 
   return msg;
 }
@@ -589,20 +591,18 @@ function generateSMSMessage() {
   const name = state.delivery.name || '';
   const phone = state.delivery.phone ? ` (${state.delivery.phone})` : '';
 
-  let sms = `[aashirwad - HOME DELIVERY ORDER]\n`;
-  sms += `Hello aashirwad, please deliver this order:\n`;
-  sms += `Address: ${address}\n`;
+  let sms = `[NEW ORDER - PLEASE CONFIRM - aashirwad]\n`;
+  sms += `Delivery To: ${address}\n`;
   if (name) sms += `Customer: ${name}${phone}\n`;
   if (notes) sms += `Instructions: ${notes}\n`;
-  sms += `\nORDERED ITEMS:\n`;
+  sms += `\nITEMS TO PREPARE:\n`;
 
   items.forEach((item, idx) => {
-    sms += `${idx + 1}. ${item.name} x${item.quantity} @ Rs.${item.unitPrice} = Rs.${item.lineTotal}\n`;
+    sms += `${idx + 1}. ${item.name} x${item.quantity} = Rs.${item.lineTotal}\n`;
   });
 
-  sms += `\nTOTAL EXPECTED BILL: Rs.${totalAmount}\n`;
-  sms += `Delivery: FREE\n\n`;
-  sms += `Please confirm my order. Thank you!`;
+  sms += `\nTOTAL BILL: Rs.${totalAmount} (Free Delivery)\n\n`;
+  sms += `ACTION FOR RESTAURANT: Please reply "CONFIRMED" with estimated delivery time.`;
 
   return sms;
 }
